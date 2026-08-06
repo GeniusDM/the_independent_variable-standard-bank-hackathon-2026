@@ -87,6 +87,12 @@ See [docs/methodology.md](docs/methodology.md) for wallet sizing logic, benchmar
 
 ## Team
 
-**Daniel Genius Mataranyinka** — [![GitHub](https://img.shields.io/badge/GitHub-GeniusDM-black?style=flat&logo=github)](https://github.com/GeniusDM)
+**Daniel Genius Mataranyinka**
 
-**Herton Cabral Mabongue** — [![GitHub](https://img.shields.io/badge/GitHub-HertonMabongue-black?style=flat&logo=github)](https://github.com/HertonMabongue)
+[![Email](https://img.shields.io/badge/Email-26653990@sun.ac.za-blue?style=flat&logo=gmail)](mailto:26653990@sun.ac.za)
+[![GitHub](https://img.shields.io/badge/GitHub-GeniusDM-black?style=flat&logo=github)](https://github.com/GeniusDM)
+
+**Herton Cabral Mabongue**
+
+[![Email](https://img.shields.io/badge/Email-27190552@sun.ac.za-blue?style=flat&logo=gmail)](mailto:27190552@sun.ac.za)
+[![GitHub](https://img.shields.io/badge/GitHub-HertonMabongue-black?style=flat&logo=github)](https://github.com/HertonMabongue)
