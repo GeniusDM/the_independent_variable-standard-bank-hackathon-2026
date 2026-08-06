@@ -1,0 +1,47 @@
+# External ratio assumptions for wallet estimation
+# All ratios are expressed as a fraction of the relevant financial statement line item
+# Sources: SARB, KPMG SA Banking Survey, Standard Bank Annual Reports, sector benchmarks
+
+transactional_banking:
+  # Estimated annual transactional banking spend as % of revenue
+  default: 0.005
+  by_sector:
+    mining: 0.004
+    retail: 0.007
+    manufacturing: 0.005
+    financial_services: 0.006
+    consumer_goods: 0.006
+    infrastructure: 0.004
+
+cross_border_fx:
+  # Estimated FX/hedging wallet as % of foreign revenue + foreign purchases
+  default: 0.012
+  by_sector:
+    mining: 0.015        # high commodity export exposure
+    retail: 0.010
+    manufacturing: 0.013
+    financial_services: 0.010
+    consumer_goods: 0.011
+    infrastructure: 0.008
+
+trade_finance:
+  # Estimated trade finance wallet as % of (COGS + Inventory)
+  default: 0.020
+  by_sector:
+    mining: 0.018
+    retail: 0.025
+    manufacturing: 0.022
+    financial_services: 0.005
+    consumer_goods: 0.023
+    infrastructure: 0.015
+
+lending_dcm:
+  # Estimated lending/DCM wallet as % of total debt outstanding
+  default: 0.030
+  by_sector:
+    mining: 0.028
+    retail: 0.032
+    manufacturing: 0.030
+    financial_services: 0.025
+    consumer_goods: 0.031
+    infrastructure: 0.035

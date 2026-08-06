@@ -1,0 +1,8 @@
+# Opportunity score weights — must sum to 1.0
+# Adjust before final submission based on judge feedback
+
+wallet_gap_zar: 0.40          # absolute ZAR gap (total wallet - syn bank share)
+wallet_gap_pct: 0.20          # relative gap as % of total wallet
+relationship_depth: 0.15      # number of active product pillars with Syn Bank
+revenue_growth_trend: 0.15    # client revenue CAGR (last 3 years)
+strategic_sector_bonus: 0.10  # bonus weight for priority sectors (mining, infra)
