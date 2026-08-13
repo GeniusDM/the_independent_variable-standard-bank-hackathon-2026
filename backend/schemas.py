@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import BaseModel
 
@@ -44,7 +44,7 @@ class Briefing(BaseModel):
     summary: str
     keySignals: list[str]
     recommendedAgenda: list[str]
-    risk: str | None
+    risk: Optional[str]
 
 
 class CopilotRequest(BaseModel):

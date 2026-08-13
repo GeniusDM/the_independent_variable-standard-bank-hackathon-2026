@@ -25,6 +25,11 @@ SECTOR_LABELS = {
     "manufacturing": "Manufacturing",
     "financial_services": "Financial Services",
     "infrastructure": "Infrastructure",
+    "industrials_pharma": "Industrials & Pharma",
+    "insurance": "Insurance",
+    "real_estate": "Real Estate",
+    "tech": "Technology",
+    "telecoms": "Telecoms",
 }
 
 
@@ -37,11 +42,15 @@ def _normalize_sector(sector: str | None) -> str:
     if not sector:
         return "consumer"
     value = sector.strip().lower().replace(" ", "_")
-    if value == "retail":
-        return "consumer"
-    if value == "consumer_goods":
-        return "consumer"
-    return value
+    # map legacy / alternate names to canonical keys
+    aliases = {
+        "retail": "consumer",
+        "consumer_goods": "consumer",
+        "financial_services": "financial_services",
+        "industrials": "industrials_pharma",
+        "pharma": "industrials_pharma",
+    }
+    return aliases.get(value, value)
 
 
 def _display_sector(sector: str) -> str:
