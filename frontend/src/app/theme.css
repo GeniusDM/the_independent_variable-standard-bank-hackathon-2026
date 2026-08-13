@@ -1,0 +1,11 @@
+:root {
+  --brand-primary: #0032a1;
+  --brand-secondary: #005199;
+  --brand-accent: #f2a900;
+  --surface: #ffffff;
+  --surface-muted: #eef3fb;
+  --text-strong: #0f172a;
+  --text-muted: #475569;
+  --radius-panel: 14px;
+  --shadow-panel: 0 10px 30px -20px rgba(0, 50, 161, 0.45);
+}

@@ -1,40 +1,57 @@
+from typing import Literal
+
 from pydantic import BaseModel
-from typing import Optional
 
 
-class ClientWallet(BaseModel):
-    client_id: str
-    client_name: Optional[str] = None
+class WalletEstimate(BaseModel):
+    low: float
+    base: float
+    high: float
+    confidence: float
+
+
+class ClientSummary(BaseModel):
+    id: str
+    name: str
     sector: str
-    total_wallet: float
-    syn_total: float
-    share_pct: float
-    gap_zar: float
-    wallet_transactional: float
-    wallet_fx: float
-    wallet_trade_finance: float
-    wallet_lending: float
+    synShare: float
+    wallet: WalletEstimate
+    synVolume: float
+    gap: float
+    opportunityScore: float
+    urgency: Literal["Low", "Medium", "High"]
+    topPillar: Literal["Transactional", "FX", "Trade Finance", "Investment Banking"]
+    whySignal: str
+    whatToPitch: str
 
 
-class OpportunityRank(ClientWallet):
-    opportunity_score: float
-    rank: int
-    explanation: Optional[str] = None
+class SectorSummary(BaseModel):
+    sector: str
+    wallet: float
+    synVolume: float
 
 
-class BriefingRequest(BaseModel):
-    client_id: str
+class PortfolioSummary(BaseModel):
+    totalWallet: float
+    synShare: float
+    totalGap: float
+    clientCount: int
+    bySector: list[SectorSummary]
 
 
-class BriefingResponse(BaseModel):
-    client_id: str
-    briefing: str
+class Briefing(BaseModel):
+    clientId: str
+    summary: str
+    keySignals: list[str]
+    recommendedAgenda: list[str]
+    risk: str | None
 
 
 class CopilotRequest(BaseModel):
     question: str
 
 
-class CopilotResponse(BaseModel):
-    narrative: str
-    results: list[dict]
+class CopilotMessage(BaseModel):
+    role: Literal["assistant"]
+    content: str
+    sources: list[str]

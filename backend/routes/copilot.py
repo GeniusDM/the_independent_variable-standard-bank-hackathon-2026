@@ -1,11 +1,14 @@
+from __future__ import annotations
+
 from fastapi import APIRouter
-from backend.schemas import CopilotRequest, CopilotResponse
+
+from ai.copilot import answer_question
+from backend.schemas import CopilotMessage, CopilotRequest
 
 router = APIRouter()
 
 
-@router.post("/", response_model=CopilotResponse)
+@router.post("/ask-ai", response_model=CopilotMessage)
 def query_copilot(req: CopilotRequest):
-    """Natural language query over the opportunity dataset."""
-    # TODO: load scored_df, call ai.copilot.run_query
-    return CopilotResponse(narrative="", results=[])
+    payload = answer_question(req.question)
+    return CopilotMessage(role="assistant", content=payload["content"], sources=payload.get("sources", []))

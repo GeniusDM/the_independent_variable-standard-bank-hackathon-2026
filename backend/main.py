@@ -14,10 +14,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(wallet.router, prefix="/wallet", tags=["Wallet"])
-app.include_router(opportunities.router, prefix="/opportunities", tags=["Opportunities"])
-app.include_router(briefings.router, prefix="/briefings", tags=["Briefings"])
-app.include_router(copilot.router, prefix="/copilot", tags=["Copilot"])
+app.include_router(wallet.router, tags=["Wallet"])
+app.include_router(opportunities.router, tags=["Opportunities"])
+app.include_router(briefings.router, tags=["Briefings"])
+app.include_router(copilot.router, tags=["Copilot"])
 
 
 @app.get("/health")

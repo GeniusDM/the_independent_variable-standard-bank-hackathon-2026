@@ -1,8 +1,10 @@
-# Opportunity score weights — must sum to 1.0
-# Adjust before final submission based on judge feedback
+metadata:
+	notes:
+		- "Weights sum to 1.0 and prioritize commercial upside first."
+		- "Ease of conversion and urgency are explicitly included for banker actionability."
 
-wallet_gap_zar: 0.40          # absolute ZAR gap (total wallet - syn bank share)
-wallet_gap_pct: 0.20          # relative gap as % of total wallet
-relationship_depth: 0.15      # number of active product pillars with Syn Bank
-revenue_growth_trend: 0.15    # client revenue CAGR (last 3 years)
-strategic_sector_bonus: 0.10  # bonus weight for priority sectors (mining, infra)
+weights:
+	gap_size: 0.50
+	ease_of_conversion: 0.20
+	relationship_depth: 0.15
+	urgency_freshness: 0.15

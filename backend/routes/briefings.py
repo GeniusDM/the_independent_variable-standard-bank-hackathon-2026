@@ -1,11 +1,20 @@
-from fastapi import APIRouter, HTTPException
-from backend.schemas import BriefingRequest, BriefingResponse
+from __future__ import annotations
+
+from fastapi import APIRouter
+
+from ai.briefing import generate_briefing
+from backend.schemas import Briefing
 
 router = APIRouter()
 
 
-@router.post("/", response_model=BriefingResponse)
-def generate_briefing(req: BriefingRequest):
-    """Generates a GenAI briefing note for a given client."""
-    # TODO: load client row from processed data, call ai.briefing.generate_briefing
-    raise HTTPException(status_code=501, detail="Not yet implemented")
+@router.get("/briefing/{client_id}", response_model=Briefing)
+def get_briefing(client_id: str):
+    payload = generate_briefing(client_id)
+    return Briefing(
+        clientId=payload["clientId"],
+        summary=payload["summary"],
+        keySignals=payload["keySignals"],
+        recommendedAgenda=payload["recommendedAgenda"],
+        risk=payload["risk"],
+    )

@@ -55,8 +55,15 @@ the_independent_variable-standard-bank-hackathon-2026/
 ```bash
 git clone https://github.com/<username>/the_independent_variable-standard-bank-hackathon-2026.git
 cd the_independent_variable-standard-bank-hackathon-2026
-pip install -r requirements.txt
 cp .env.example .env   # add your API keys
+```
+
+## Prerequisites
+
+Install the Python requirements before doing anything else:
+
+```bash
+pip install -r requirements.txt
 ```
 
 Place the hackathon CSV files in `data/raw/`.
@@ -69,12 +76,6 @@ Place the hackathon CSV files in `data/raw/`.
 uvicorn backend.main:app --reload
 ```
 
-**Tests**
-
-```bash
-pytest tests/
-```
-
 **Notebook**
 
 ```bash
@@ -84,6 +85,12 @@ jupyter notebook notebooks/share_of_wallet_analysis.ipynb
 ## Methodology
 
 See [docs/methodology.md](docs/methodology.md) for wallet sizing logic, benchmark ratios, and assumptions.
+
+**Tests**
+
+```bash
+pytest tests/
+```
 
 ## Team
 

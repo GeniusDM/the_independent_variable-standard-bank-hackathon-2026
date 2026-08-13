@@ -1,47 +1,91 @@
-# External ratio assumptions for wallet estimation
-# All ratios are expressed as a fraction of the relevant financial statement line item
-# Sources: SARB, KPMG SA Banking Survey, Standard Bank Annual Reports, sector benchmarks
+metadata:
+  currency: ZAR
+  notes:
+    - "Ratios proxy annual fee pool as % of client activity flows in each product pillar."
+    - "Low/base/high bounds are used directly for analytical confidence ranges."
+  sources:
+    - "South African Reserve Bank, Quarterly Bulletin 2024-2025 (payments and banking fee trends)."
+    - "National Treasury Budget Review 2025, financial sector chapter (banking spread and fee structure context)."
+    - "JSE SENS filings and annual reports for major listed corporates (FX and trade finance usage narratives)."
 
-transactional_banking:
-  # Estimated annual transactional banking spend as % of revenue
-  default: 0.005
-  by_sector:
-    mining: 0.004
-    retail: 0.007
-    manufacturing: 0.005
-    financial_services: 0.006
-    consumer_goods: 0.006
-    infrastructure: 0.004
+pillars:
+  transactional:
+    default:
+      low: 0.0012
+      base: 0.0018
+      high: 0.0024
+    by_sector:
+      mining:
+        low: 0.0011
+        base: 0.0016
+        high: 0.0021
+      consumer:
+        low: 0.0014
+        base: 0.0020
+        high: 0.0026
+      manufacturing:
+        low: 0.0012
+        base: 0.0019
+        high: 0.0024
+      financial_services:
+        low: 0.0015
+        base: 0.0022
+        high: 0.0028
+      infrastructure:
+        low: 0.0010
+        base: 0.0015
+        high: 0.0020
 
-cross_border_fx:
-  # Estimated FX/hedging wallet as % of foreign revenue + foreign purchases
-  default: 0.012
-  by_sector:
-    mining: 0.015        # high commodity export exposure
-    retail: 0.010
-    manufacturing: 0.013
-    financial_services: 0.010
-    consumer_goods: 0.011
-    infrastructure: 0.008
+  fx:
+    default:
+      low: 0.0028
+      base: 0.0036
+      high: 0.0044
+    by_sector:
+      mining:
+        low: 0.0030
+        base: 0.0039
+        high: 0.0048
+      consumer:
+        low: 0.0026
+        base: 0.0034
+        high: 0.0042
+      manufacturing:
+        low: 0.0029
+        base: 0.0038
+        high: 0.0046
+      financial_services:
+        low: 0.0024
+        base: 0.0031
+        high: 0.0039
+      infrastructure:
+        low: 0.0022
+        base: 0.0030
+        high: 0.0038
 
-trade_finance:
-  # Estimated trade finance wallet as % of (COGS + Inventory)
-  default: 0.020
-  by_sector:
-    mining: 0.018
-    retail: 0.025
-    manufacturing: 0.022
-    financial_services: 0.005
-    consumer_goods: 0.023
-    infrastructure: 0.015
-
-lending_dcm:
-  # Estimated lending/DCM wallet as % of total debt outstanding
-  default: 0.030
-  by_sector:
-    mining: 0.028
-    retail: 0.032
-    manufacturing: 0.030
-    financial_services: 0.025
-    consumer_goods: 0.031
-    infrastructure: 0.035
+  trade_finance:
+    default:
+      low: 0.0042
+      base: 0.0053
+      high: 0.0065
+    by_sector:
+      mining:
+        low: 0.0040
+        base: 0.0052
+        high: 0.0064
+      consumer:
+        low: 0.0043
+        base: 0.0055
+        high: 0.0068
+      manufacturing:
+        low: 0.0045
+        base: 0.0056
+        high: 0.0068
+      financial_services:
+        low: 0.0034
+        base: 0.0043
+        high: 0.0052
+      infrastructure:
+        low: 0.0038
+        base: 0.0048
+        high: 0.0059
