@@ -174,6 +174,37 @@ jupyter notebook notebooks/share_of_wallet_analysis.ipynb
 pytest tests/
 ```
 
+## Demo Setup (Vercel + ngrok)
+
+For live judging, the frontend is deployed on Vercel and the backend runs locally tunnelled via ngrok.
+
+**On your laptop:**
+
+```bash
+# 1. Start the backend
+python3 start.py --backend
+
+# 2. In a separate terminal, start ngrok
+ngrok http 8000
+```
+
+**On Vercel:**
+
+- Set `NEXT_PUBLIC_API_BASE_URL` to your ngrok URL (e.g. `https://abc123.ngrok-free.app`)
+- Redeploy
+
+**On your laptop, allow the Vercel domain through CORS:**
+
+Replace `https://your-project.vercel.app` in `backend/main.py` with your actual Vercel URL, then:
+
+```bash
+python3 start.py --backend
+```
+
+Judges scan the QR code → Vercel frontend → ngrok tunnel → local FastAPI backend → real data.
+
+---
+
 ## Team
 
 **Daniel Genius Mataranyinka**
