@@ -1,0 +1,151 @@
+metadata:
+  currency: ZAR
+  notes:
+    - "Ratios proxy annual fee pool as % of client activity flows in each product pillar."
+    - "Low/base/high bounds are used directly for analytical confidence ranges."
+  sources:
+    - "South African Reserve Bank, Quarterly Bulletin 2024-2025 (payments and banking fee trends)."
+    - "National Treasury Budget Review 2025, financial sector chapter (banking spread and fee structure context)."
+    - "JSE SENS filings and annual reports for major listed corporates (FX and trade finance usage narratives)."
+
+pillars:
+  transactional:
+    default:
+      low: 0.0012
+      base: 0.0018
+      high: 0.0024
+    by_sector:
+      mining:
+        low: 0.0011
+        base: 0.0016
+        high: 0.0021
+      consumer:
+        low: 0.0014
+        base: 0.0020
+        high: 0.0026
+      manufacturing:
+        low: 0.0012
+        base: 0.0019
+        high: 0.0024
+      financial_services:
+        low: 0.0015
+        base: 0.0022
+        high: 0.0028
+      infrastructure:
+        low: 0.0010
+        base: 0.0015
+        high: 0.0020
+      industrials_pharma:
+        low: 0.0013
+        base: 0.0019
+        high: 0.0025
+      insurance:
+        low: 0.0016
+        base: 0.0023
+        high: 0.0029
+      real_estate:
+        low: 0.0011
+        base: 0.0016
+        high: 0.0021
+      tech:
+        low: 0.0014
+        base: 0.0020
+        high: 0.0026
+      telecoms:
+        low: 0.0013
+        base: 0.0018
+        high: 0.0024
+
+  fx:
+    default:
+      low: 0.0028
+      base: 0.0036
+      high: 0.0044
+    by_sector:
+      mining:
+        low: 0.0030
+        base: 0.0039
+        high: 0.0048
+      consumer:
+        low: 0.0026
+        base: 0.0034
+        high: 0.0042
+      manufacturing:
+        low: 0.0029
+        base: 0.0038
+        high: 0.0046
+      financial_services:
+        low: 0.0024
+        base: 0.0031
+        high: 0.0039
+      infrastructure:
+        low: 0.0022
+        base: 0.0030
+        high: 0.0038
+      industrials_pharma:
+        low: 0.0028
+        base: 0.0037
+        high: 0.0046
+      insurance:
+        low: 0.0020
+        base: 0.0027
+        high: 0.0034
+      real_estate:
+        low: 0.0018
+        base: 0.0025
+        high: 0.0032
+      tech:
+        low: 0.0022
+        base: 0.0030
+        high: 0.0038
+      telecoms:
+        low: 0.0021
+        base: 0.0028
+        high: 0.0036
+
+  trade_finance:
+    default:
+      low: 0.0042
+      base: 0.0053
+      high: 0.0065
+    by_sector:
+      mining:
+        low: 0.0040
+        base: 0.0052
+        high: 0.0064
+      consumer:
+        low: 0.0043
+        base: 0.0055
+        high: 0.0068
+      manufacturing:
+        low: 0.0045
+        base: 0.0056
+        high: 0.0068
+      financial_services:
+        low: 0.0034
+        base: 0.0043
+        high: 0.0052
+      infrastructure:
+        low: 0.0038
+        base: 0.0048
+        high: 0.0059
+      industrials_pharma:
+        low: 0.0044
+        base: 0.0055
+        high: 0.0067
+      insurance:
+        low: 0.0028
+        base: 0.0036
+        high: 0.0044
+      real_estate:
+        low: 0.0032
+        base: 0.0041
+        high: 0.0050
+      tech:
+        low: 0.0030
+        base: 0.0039
+        high: 0.0048
+      telecoms:
+        low: 0.0035
+        base: 0.0045
+        high: 0.0055
