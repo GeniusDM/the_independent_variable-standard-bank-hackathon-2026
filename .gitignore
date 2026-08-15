@@ -254,3 +254,19 @@ docs/executive_summary.pdf
 # Logs
 *.log
 prompts/*.log
+
+# Hackathon data + briefs — NEVER commit these.
+# transactional_banking.csv is 392MB; GitHub rejects any file over 100MB.
+DATA/
+data/raw/
+data/processed/
+*.csv
+__MACOSX/
+
+# Supplied briefs and T&Cs
+BRIEFS_&_T&Cs/
+*.pdf
+!docs/*.pdf
+
+# Keep the external financials we build by hand in Phase 1
+!data/external/*.csv

@@ -10,6 +10,7 @@ Usage:
 
 import argparse
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -47,7 +48,9 @@ def start_backend() -> subprocess.Popen:
 
 
 def start_frontend() -> subprocess.Popen:
-    npm = "npm"
+    # On Windows npm is a .cmd shim, so the bare name is not an executable
+    # Popen can launch. shutil.which resolves it on every platform.
+    npm = shutil.which("npm") or ("npm.cmd" if os.name == "nt" else "npm")
     proc = subprocess.Popen(
         [npm, "run", "dev"],
         cwd=FRONTEND_DIR,

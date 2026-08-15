@@ -119,21 +119,40 @@ the_independent_variable-standard-bank-hackathon-2026/
 
 ## Setup
 
+Requires Python 3.11+ and Node 18+.
+
 ```bash
-git clone https://github.com/<username>/the_independent_variable-standard-bank-hackathon-2026.git
+git clone https://github.com/GeniusDM/the_independent_variable-standard-bank-hackathon-2026.git
 cd the_independent_variable-standard-bank-hackathon-2026
 cp .env.example .env   # add your API keys
 ```
 
-## Prerequisites
-
-Install the Python requirements before doing anything else:
+**1. Python environment**
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate          # macOS / Linux
+.venv\Scripts\activate             # Windows
+
 pip install -r requirements.txt
 ```
 
-Place the hackathon CSV files in `data/raw/`.
+**2. Node packages**
+
+```bash
+cd frontend && npm install && cd ..
+```
+
+**3. Hackathon data**
+
+Copy the three supplied CSVs into `data/raw/` (the directory is git-ignored — the
+files total ~429MB and must never be committed):
+
+```
+data/raw/transactional_banking.csv
+data/raw/cross_border_payments.csv
+data/raw/trade_finance.csv
+```
 
 ## Running
 
@@ -142,14 +161,17 @@ Place the hackathon CSV files in `data/raw/`.
 `start.py` launches the FastAPI backend and the Next.js frontend together in one terminal, prefixing each process's output with a coloured `[backend]` / `[frontend]` label. `Ctrl+C` shuts both down cleanly.
 
 ```bash
-python3 start.py
+python start.py
 ```
+
+Then open <http://localhost:3000>. The first request builds the wallet model from
+the raw CSVs and takes roughly 10 seconds; afterwards results are cached.
 
 Optional flags if you only need one side:
 
 ```bash
-python3 start.py --backend
-python3 start.py --frontend
+python start.py --backend
+python start.py --frontend
 ```
 
 **Individually**
