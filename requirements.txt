@@ -17,11 +17,11 @@ uvicorn[standard]>=0.29.0
 pydantic>=2.6.0
 
 # GenAI
-openai>=1.30.0
-google-generativeai>=0.5.0
-langchain>=0.2.0
-langchain-openai>=0.1.0
-faiss-cpu>=1.8.0            # vector store for RAG
+# google-genai is the current SDK. google-generativeai is end-of-life and its
+# model names have already been withdrawn — kept only as an import fallback.
+google-genai>=1.0.0
+openai>=1.30.0              # optional provider
+# anthropic>=0.40.0         # optional provider, uncomment if using an Anthropic key
 
 # Visualisation
 plotly>=5.22.0
@@ -31,6 +31,10 @@ seaborn>=0.13.0
 # Notebook
 jupyter>=1.0.0
 ipykernel>=6.29.0
+nbformat>=5.10.0            # scripts/build_notebook.py
+
+# Submission artefacts
+python-pptx>=1.0.0          # scripts/build_submission.py builds the judging deck
 
 # Testing
 pytest>=8.2.0
