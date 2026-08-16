@@ -1,151 +1,122 @@
 metadata:
   currency: ZAR
-  notes:
-    - "Ratios proxy annual fee pool as % of client activity flows in each product pillar."
-    - "Low/base/high bounds are used directly for analytical confidence ranges."
+  model: >
+    Two-sided share-of-wallet estimate. The addressable banking FLOW for each
+    client is sized top-down from that company's published financial statements;
+    the flow Syn Bank actually captures is measured bottom-up from the internal
+    transaction datasets. Share = captured / addressable. The two sides come from
+    independent sources, so share is a genuine measurement rather than a restatement
+    of an assumed capture rate.
+  units: >
+    Flow multiples are applied to an annual financial-statement figure and produce
+    an annual ZAR flow. Fee margins convert an uncaptured flow gap into an annual
+    ZAR revenue opportunity.
   sources:
-    - "South African Reserve Bank, Quarterly Bulletin 2024-2025 (payments and banking fee trends)."
-    - "National Treasury Budget Review 2025, financial sector chapter (banking spread and fee structure context)."
-    - "JSE SENS filings and annual reports for major listed corporates (FX and trade finance usage narratives)."
+    - "Company annual results and financial statements FY2025 — see data/external/company_financials.csv for the per-client citation."
+    - "USD/ZAR average for 2025 of 17.8839 — exchangerates.org.uk USD-ZAR 2025 history."
+    - "South African Reserve Bank, Quarterly Bulletin 2024-2025 (payment system volumes and banking fee trends)."
+    - "National Treasury Budget Review 2025, financial sector chapter."
+
+fx_rates:
+  # Annual averages for the 2025 reporting year. USD is sourced; EUR and GBP are
+  # cross-rates derived from that USD anchor and are marked approximate.
+  USD: 17.8839
+  EUR: 20.20
+  GBP: 23.10
+  ZAR: 1.0
+
+# Where cost of sales is not separately disclosed, impute it from revenue using a
+# sector-typical gross margin. Values are only used when cogs_zar_m is blank.
+gross_margin_by_sector:
+  mining: 0.35
+  consumer: 0.25
+  manufacturing: 0.22
+  financial_services: 0.55
+  infrastructure: 0.20
+  industrials_pharma: 0.45
+  insurance: 0.60
+  real_estate: 0.65
+  tech: 0.50
+  telecoms: 0.45
+
+# Inventory is imputed as a fraction of cost of sales when not disclosed.
+inventory_to_cogs_by_sector:
+  mining: 0.14
+  consumer: 0.20
+  manufacturing: 0.24
+  financial_services: 0.01
+  infrastructure: 0.10
+  industrials_pharma: 0.30
+  insurance: 0.01
+  real_estate: 0.02
+  tech: 0.06
+  telecoms: 0.05
 
 pillars:
+  # Annual transactional banking flow (collections, supplier payments, payroll,
+  # treasury sweeps) as a multiple of SA-attributable revenue. A corporate moves
+  # substantially more than its revenue through its banks each year because both
+  # sides of the working-capital cycle cross the account.
   transactional:
+    signal: revenue
     default:
-      low: 0.0012
-      base: 0.0018
-      high: 0.0024
+      low: 1.6
+      base: 2.1
+      high: 2.7
+    fee_margin: 0.0018
     by_sector:
-      mining:
-        low: 0.0011
-        base: 0.0016
-        high: 0.0021
-      consumer:
-        low: 0.0014
-        base: 0.0020
-        high: 0.0026
-      manufacturing:
-        low: 0.0012
-        base: 0.0019
-        high: 0.0024
-      financial_services:
-        low: 0.0015
-        base: 0.0022
-        high: 0.0028
-      infrastructure:
-        low: 0.0010
-        base: 0.0015
-        high: 0.0020
-      industrials_pharma:
-        low: 0.0013
-        base: 0.0019
-        high: 0.0025
-      insurance:
-        low: 0.0016
-        base: 0.0023
-        high: 0.0029
-      real_estate:
-        low: 0.0011
-        base: 0.0016
-        high: 0.0021
-      tech:
-        low: 0.0014
-        base: 0.0020
-        high: 0.0026
-      telecoms:
-        low: 0.0013
-        base: 0.0018
-        high: 0.0024
+      mining:              {low: 1.3, base: 1.7, high: 2.2}
+      consumer:            {low: 2.0, base: 2.6, high: 3.3}
+      manufacturing:       {low: 1.7, base: 2.2, high: 2.8}
+      financial_services:  {low: 2.4, base: 3.1, high: 4.0}
+      infrastructure:      {low: 1.4, base: 1.8, high: 2.3}
+      industrials_pharma:  {low: 1.7, base: 2.2, high: 2.8}
+      insurance:           {low: 2.2, base: 2.9, high: 3.7}
+      real_estate:         {low: 1.1, base: 1.5, high: 1.9}
+      tech:                {low: 1.5, base: 2.0, high: 2.6}
+      telecoms:            {low: 1.8, base: 2.3, high: 2.9}
 
+  # Annual cross-border payment flow as a multiple of SA-attributable foreign
+  # revenue. Exporters repatriate receipts and importers settle abroad, and
+  # intercompany treasury movements add a further leg.
   fx:
+    signal: foreign_revenue
     default:
-      low: 0.0028
-      base: 0.0036
-      high: 0.0044
+      low: 1.0
+      base: 1.4
+      high: 1.9
+    fee_margin: 0.0036
     by_sector:
-      mining:
-        low: 0.0030
-        base: 0.0039
-        high: 0.0048
-      consumer:
-        low: 0.0026
-        base: 0.0034
-        high: 0.0042
-      manufacturing:
-        low: 0.0029
-        base: 0.0038
-        high: 0.0046
-      financial_services:
-        low: 0.0024
-        base: 0.0031
-        high: 0.0039
-      infrastructure:
-        low: 0.0022
-        base: 0.0030
-        high: 0.0038
-      industrials_pharma:
-        low: 0.0028
-        base: 0.0037
-        high: 0.0046
-      insurance:
-        low: 0.0020
-        base: 0.0027
-        high: 0.0034
-      real_estate:
-        low: 0.0018
-        base: 0.0025
-        high: 0.0032
-      tech:
-        low: 0.0022
-        base: 0.0030
-        high: 0.0038
-      telecoms:
-        low: 0.0021
-        base: 0.0028
-        high: 0.0036
+      mining:              {low: 1.2, base: 1.6, high: 2.1}
+      consumer:            {low: 0.9, base: 1.3, high: 1.7}
+      manufacturing:       {low: 1.1, base: 1.5, high: 2.0}
+      financial_services:  {low: 0.8, base: 1.1, high: 1.5}
+      infrastructure:      {low: 0.7, base: 1.0, high: 1.4}
+      industrials_pharma:  {low: 1.1, base: 1.5, high: 2.0}
+      insurance:           {low: 0.6, base: 0.9, high: 1.2}
+      real_estate:         {low: 0.4, base: 0.6, high: 0.9}
+      tech:                {low: 0.8, base: 1.1, high: 1.5}
+      telecoms:            {low: 0.9, base: 1.2, high: 1.6}
 
+  # Annual documentary trade finance value (letters of credit, guarantees,
+  # collections) as a multiple of SA-attributable cost of sales plus inventory.
+  # Only a minority of physical trade is settled under a documentary instrument,
+  # so these multiples sit well below 1.
   trade_finance:
+    signal: cogs_plus_inventory
     default:
-      low: 0.0042
-      base: 0.0053
-      high: 0.0065
+      low: 0.12
+      base: 0.19
+      high: 0.28
+    fee_margin: 0.0053
     by_sector:
-      mining:
-        low: 0.0040
-        base: 0.0052
-        high: 0.0064
-      consumer:
-        low: 0.0043
-        base: 0.0055
-        high: 0.0068
-      manufacturing:
-        low: 0.0045
-        base: 0.0056
-        high: 0.0068
-      financial_services:
-        low: 0.0034
-        base: 0.0043
-        high: 0.0052
-      infrastructure:
-        low: 0.0038
-        base: 0.0048
-        high: 0.0059
-      industrials_pharma:
-        low: 0.0044
-        base: 0.0055
-        high: 0.0067
-      insurance:
-        low: 0.0028
-        base: 0.0036
-        high: 0.0044
-      real_estate:
-        low: 0.0032
-        base: 0.0041
-        high: 0.0050
-      tech:
-        low: 0.0030
-        base: 0.0039
-        high: 0.0048
-      telecoms:
-        low: 0.0035
-        base: 0.0045
-        high: 0.0055
+      mining:              {low: 0.14, base: 0.22, high: 0.32}
+      consumer:            {low: 0.13, base: 0.20, high: 0.29}
+      manufacturing:       {low: 0.16, base: 0.25, high: 0.36}
+      financial_services:  {low: 0.03, base: 0.06, high: 0.10}
+      infrastructure:      {low: 0.11, base: 0.18, high: 0.26}
+      industrials_pharma:  {low: 0.15, base: 0.23, high: 0.33}
+      insurance:           {low: 0.02, base: 0.04, high: 0.07}
+      real_estate:         {low: 0.02, base: 0.05, high: 0.08}
+      tech:                {low: 0.06, base: 0.10, high: 0.16}
+      telecoms:            {low: 0.08, base: 0.13, high: 0.20}

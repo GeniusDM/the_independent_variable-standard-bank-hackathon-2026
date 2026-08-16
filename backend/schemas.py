@@ -18,6 +18,9 @@ class ClientSummary(BaseModel):
     wallet: WalletEstimate
     synVolume: float
     gap: float
+    # Annual ZAR fee revenue the uncaptured gap represents. This is the number a
+    # coverage banker is actually chasing; `gap` is the flow behind it.
+    revenueOpportunity: float
     opportunityScore: float
     urgency: Literal["Low", "Medium", "High"]
     topPillar: Literal["Transactional", "FX", "Trade Finance", "Investment Banking"]

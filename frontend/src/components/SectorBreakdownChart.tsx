@@ -18,6 +18,7 @@ interface SectorRow {
 }
 
 function formatZAR(value: number) {
+  if (Math.abs(value) >= 1e12) return `R${(value / 1e12).toFixed(2)}T`;
   if (Math.abs(value) >= 1e9) return `R${(value / 1e9).toFixed(1)}B`;
   return `R${(value / 1e6).toFixed(0)}M`;
 }

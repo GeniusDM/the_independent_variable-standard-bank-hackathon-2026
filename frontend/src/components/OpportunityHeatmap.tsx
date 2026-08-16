@@ -169,9 +169,9 @@ export default function OpportunityHeatmap({
                       backgroundColor: cellColor(c.opportunityScore),
                       color: textColor(c.opportunityScore),
                     }}
-                    title={`Composite: ${c.opportunityScore}`}
+                    title={`Composite: ${c.opportunityScore.toFixed(0)}`}
                   >
-                    {c.opportunityScore}
+                    {c.opportunityScore.toFixed(0)}
                   </div>
                 </td>
               </tr>

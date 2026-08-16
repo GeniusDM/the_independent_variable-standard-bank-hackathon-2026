@@ -4,6 +4,7 @@ import SectorBreakdownChart from "@/components/SectorBreakdownChart";
 import { getPortfolio, getClients } from "@/lib/api";
 
 function formatZAR(value: number) {
+  if (Math.abs(value) >= 1e12) return `R${(value / 1e12).toFixed(2)}T`;
   if (Math.abs(value) >= 1e9) return `R${(value / 1e9).toFixed(1)}B`;
   return `R${(value / 1e6).toFixed(0)}M`;
 }
@@ -36,7 +37,7 @@ export default async function PortfolioPage() {
         />
         <KpiCard
           label="Syn Bank Share"
-          value={`${(portfolio.synShare * 100).toFixed(0)}%`}
+          value={`${(portfolio.synShare * 100).toFixed(1)}%`}
         />
         <KpiCard
           label="Total Opportunity Gap"
@@ -44,8 +45,11 @@ export default async function PortfolioPage() {
           accent
         />
         <KpiCard
-          label="Clients Tracked"
-          value={String(portfolio.clientCount)}
+          label="Revenue Oppty / yr"
+          value={formatZAR(
+            clients.reduce((sum, c) => sum + c.revenueOpportunity, 0),
+          )}
+          accent
         />
       </div>
 

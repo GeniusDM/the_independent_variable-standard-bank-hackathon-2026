@@ -1,6 +1,6 @@
 """Shared fixtures.
 
-The tests below run against small in-memory frames rather than the 400MB CSVs in
+The tests run against small in-memory frames rather than the ~429MB CSVs in
 data/raw/, so `pytest tests/` stays fast and works on a fresh clone before the
 hackathon data has been placed.
 """
@@ -17,16 +17,83 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parents[1]))
 
 
-def make_activity_frame() -> pd.DataFrame:
-    """A minimal client-activity frame with every column estimate_wallet_ranges reads."""
+def make_external_frame() -> pd.DataFrame:
+    """Published-financial inputs, in the shape load_external_financials returns.
+
+    C001 has reported COGS and inventory; C002 has neither, so it exercises the
+    imputation path; C003 is a small domestic client with no foreign revenue.
+    """
     rows = [
         {
             "client_id": "C001",
             "client_name": "Acme Mining Ltd",
             "sector": "mining",
-            "transactional_flow": 900_000_000.0,
-            "fx_flow": 400_000_000.0,
-            "trade_flow": 150_000_000.0,
+            "revenue_zar_m": 120_000.0,
+            "cogs_zar_m": 78_000.0,
+            "inventory_zar_m": 11_000.0,
+            "total_debt_zar_m": 30_000.0,
+            "foreign_revenue_share": 0.80,
+            "sa_attribution_share": 0.90,
+            "source_quality": "reported",
+            "cogs_imputed": False,
+            "inventory_imputed": False,
+        },
+        {
+            "client_id": "C002",
+            "client_name": "Beta Retail Group",
+            "sector": "consumer",
+            "revenue_zar_m": 60_000.0,
+            "cogs_zar_m": 45_000.0,
+            "inventory_zar_m": 9_000.0,
+            "total_debt_zar_m": 4_000.0,
+            "foreign_revenue_share": 0.10,
+            "sa_attribution_share": 1.00,
+            "source_quality": "derived",
+            "cogs_imputed": True,
+            "inventory_imputed": True,
+        },
+        {
+            "client_id": "C003",
+            "client_name": "Cape Infrastructure SOC",
+            "sector": "infrastructure",
+            "revenue_zar_m": 8_000.0,
+            "cogs_zar_m": 6_400.0,
+            "inventory_zar_m": 640.0,
+            "total_debt_zar_m": 12_000.0,
+            "foreign_revenue_share": 0.00,
+            "sa_attribution_share": 1.00,
+            "source_quality": "estimated",
+            "cogs_imputed": True,
+            "inventory_imputed": True,
+        },
+    ]
+
+    df = pd.DataFrame(rows)
+    for col in ("revenue_zar_m", "cogs_zar_m", "inventory_zar_m", "total_debt_zar_m"):
+        df[col.replace("_zar_m", "_zar")] = df[col] * 1_000_000.0
+
+    df["addressable_revenue_zar"] = df["revenue_zar"] * df["sa_attribution_share"]
+    df["addressable_foreign_revenue_zar"] = (
+        df["revenue_zar"] * df["foreign_revenue_share"] * df["sa_attribution_share"]
+    )
+    df["addressable_cogs_inventory_zar"] = (
+        df["cogs_zar"] + df["inventory_zar"]
+    ) * df["sa_attribution_share"]
+    return df
+
+
+def make_captured_frame() -> pd.DataFrame:
+    """Bottom-up measured flow, in the shape measure_captured_flow returns.
+
+    C003 has no cross-border activity at all, so share and gap must both handle
+    a zero addressable FX base without dividing by zero.
+    """
+    rows = [
+        {
+            "client_id": "C001",
+            "captured_transactional": 40_000_000_000.0,
+            "captured_fx": 30_000_000_000.0,
+            "captured_trade_finance": 5_000_000_000.0,
             "transaction_count": 4000,
             "fx_transaction_count": 800,
             "trade_transaction_count": 300,
@@ -34,7 +101,6 @@ def make_activity_frame() -> pd.DataFrame:
             "corridor_count": 6,
             "instrument_count": 3,
             "inbound_ratio": 0.55,
-            "fx_inbound_ratio": 0.40,
             "avg_tenor_days": 90.0,
             "tx_growth_90d": 0.12,
             "fx_growth_90d": 0.30,
@@ -42,11 +108,9 @@ def make_activity_frame() -> pd.DataFrame:
         },
         {
             "client_id": "C002",
-            "client_name": "Beta Retail Group",
-            "sector": "consumer",
-            "transactional_flow": 2_100_000_000.0,
-            "fx_flow": 90_000_000.0,
-            "trade_flow": 600_000_000.0,
+            "captured_transactional": 9_000_000_000.0,
+            "captured_fx": 400_000_000.0,
+            "captured_trade_finance": 1_200_000_000.0,
             "transaction_count": 9000,
             "fx_transaction_count": 200,
             "trade_transaction_count": 900,
@@ -54,7 +118,6 @@ def make_activity_frame() -> pd.DataFrame:
             "corridor_count": 2,
             "instrument_count": 2,
             "inbound_ratio": 0.70,
-            "fx_inbound_ratio": 0.20,
             "avg_tenor_days": 200.0,
             "tx_growth_90d": -0.04,
             "fx_growth_90d": 0.02,
@@ -62,11 +125,9 @@ def make_activity_frame() -> pd.DataFrame:
         },
         {
             "client_id": "C003",
-            "client_name": "Cape Infrastructure SOC",
-            "sector": "infrastructure",
-            "transactional_flow": 300_000_000.0,
-            "fx_flow": 0.0,
-            "trade_flow": 25_000_000.0,
+            "captured_transactional": 900_000_000.0,
+            "captured_fx": 0.0,
+            "captured_trade_finance": 50_000_000.0,
             "transaction_count": 700,
             "fx_transaction_count": 0,
             "trade_transaction_count": 60,
@@ -74,7 +135,6 @@ def make_activity_frame() -> pd.DataFrame:
             "corridor_count": 0,
             "instrument_count": 1,
             "inbound_ratio": 0.35,
-            "fx_inbound_ratio": 0.0,
             "avg_tenor_days": 365.0,
             "tx_growth_90d": 0.01,
             "fx_growth_90d": 0.0,
@@ -83,12 +143,15 @@ def make_activity_frame() -> pd.DataFrame:
     ]
 
     df = pd.DataFrame(rows)
-    df["active_pillars"] = (
-        (df["transactional_flow"] > 0).astype(int)
-        + (df["fx_flow"] > 0).astype(int)
-        + (df["trade_flow"] > 0).astype(int)
+    df["captured_total"] = (
+        df["captured_transactional"] + df["captured_fx"] + df["captured_trade_finance"]
     )
-    df["relationship_depth_score"] = (df["active_pillars"] / 3.0).clip(0.0, 1.0)
+    df["active_pillars"] = (
+        (df["captured_transactional"] > 0).astype(int)
+        + (df["captured_fx"] > 0).astype(int)
+        + (df["captured_trade_finance"] > 0).astype(int)
+    )
+    df["relationship_depth_score"] = df["active_pillars"] / 3.0
     df["recent_growth_signal"] = (
         df[["tx_growth_90d", "fx_growth_90d", "trade_growth_90d"]].mean(axis=1).clip(-1.0, 2.0)
     )
@@ -96,19 +159,38 @@ def make_activity_frame() -> pd.DataFrame:
 
 
 @pytest.fixture
-def activity_df() -> pd.DataFrame:
-    return make_activity_frame()
+def benchmarks() -> dict:
+    from models.wallet_engine import load_benchmarks
+
+    return load_benchmarks()
 
 
 @pytest.fixture
-def wallet_df(activity_df: pd.DataFrame) -> pd.DataFrame:
-    from models.wallet_engine import estimate_wallet_ranges
-
-    return estimate_wallet_ranges(activity_df)
+def external_df() -> pd.DataFrame:
+    return make_external_frame()
 
 
 @pytest.fixture
-def scored_df(wallet_df: pd.DataFrame) -> pd.DataFrame:
+def captured_df() -> pd.DataFrame:
+    return make_captured_frame()
+
+
+@pytest.fixture
+def addressable_df(external_df, benchmarks) -> pd.DataFrame:
+    from models.wallet_engine import estimate_addressable_flow
+
+    return estimate_addressable_flow(external_df, benchmarks)
+
+
+@pytest.fixture
+def wallet_df(addressable_df, captured_df, benchmarks) -> pd.DataFrame:
+    from models.wallet_engine import compute_share_of_wallet
+
+    return compute_share_of_wallet(addressable_df, captured_df, benchmarks)
+
+
+@pytest.fixture
+def scored_df(wallet_df) -> pd.DataFrame:
     from models.opportunity_engine import score_opportunities
 
     return score_opportunities(wallet_df)

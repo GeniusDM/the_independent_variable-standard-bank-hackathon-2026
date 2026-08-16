@@ -255,18 +255,19 @@ docs/executive_summary.pdf
 *.log
 prompts/*.log
 
-# Hackathon data + briefs — NEVER commit these.
-# transactional_banking.csv is 392MB; GitHub rejects any file over 100MB.
-DATA/
+# Hackathon data — NEVER commit these.
+# transactional_banking.csv is 392MB and GitHub rejects any file over 100MB.
+# These are matched by name so they stay ignored wherever they are dropped.
+# NB: do not add a `DATA/` rule here. Git is case-insensitive on Windows and
+# macOS, so it would also swallow `data/external/`, which we DO track.
+transactional_banking.csv
+cross_border_payments.csv
+trade_finance.csv
 data/raw/
 data/processed/
-*.csv
 __MACOSX/
 
 # Supplied briefs and T&Cs
 BRIEFS_&_T&Cs/
 *.pdf
 !docs/*.pdf
-
-# Keep the external financials we build by hand in Phase 1
-!data/external/*.csv

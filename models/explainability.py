@@ -13,6 +13,8 @@ PITCH_BY_PILLAR = {
 
 
 def _format_zar(value: float) -> str:
+    if abs(value) >= 1_000_000_000_000:
+        return f"R{value / 1_000_000_000_000:.2f}T"
     if abs(value) >= 1_000_000_000:
         return f"R{value / 1_000_000_000:.2f}B"
     return f"R{value / 1_000_000:.0f}M"

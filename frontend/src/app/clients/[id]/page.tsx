@@ -3,6 +3,7 @@ import { getClient, getBriefing } from "@/lib/api";
 import ClientBriefingCard from "@/components/ClientBriefingCard";
 
 function formatZAR(value: number) {
+  if (Math.abs(value) >= 1e12) return `R${(value / 1e12).toFixed(2)}T`;
   if (Math.abs(value) >= 1e9) return `R${(value / 1e9).toFixed(2)}B`;
   return `R${(value / 1e6).toFixed(0)}M`;
 }
@@ -65,15 +66,23 @@ export default async function ClientDetailPage({
             Syn Bank Share
           </div>
           <div className="mt-1 text-xl font-semibold text-[#0032A1]">
-            {(client.synShare * 100).toFixed(0)}%
+            {client.synShare * 100 < 10
+              ? `${(client.synShare * 100).toFixed(1)}%`
+              : `${(client.synShare * 100).toFixed(0)}%`}
+          </div>
+          <div className="text-xs text-slate-500">
+            {formatZAR(client.synVolume)} captured
           </div>
         </div>
         <div className="rounded-[var(--radius-panel)] border border-slate-200/90 bg-white p-4 shadow-[var(--shadow-panel)]">
           <div className="text-[11px] uppercase tracking-[0.1em] text-slate-500">
-            Wallet Gap
+            Revenue Oppty / yr
           </div>
           <div className="mt-1 text-xl font-semibold text-[#F2A900]">
-            {formatZAR(client.gap)}
+            {formatZAR(client.revenueOpportunity)}
+          </div>
+          <div className="text-xs text-slate-500">
+            on a {formatZAR(client.gap)} flow gap
           </div>
         </div>
         <div className="rounded-[var(--radius-panel)] border border-slate-200/90 bg-white p-4 shadow-[var(--shadow-panel)]">
@@ -81,7 +90,7 @@ export default async function ClientDetailPage({
             Opportunity Score
           </div>
           <div className="mt-1 text-xl font-semibold text-[#0032A1]">
-            {client.opportunityScore}
+            {client.opportunityScore.toFixed(0)}
           </div>
         </div>
       </div>

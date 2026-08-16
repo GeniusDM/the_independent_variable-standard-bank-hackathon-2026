@@ -4,7 +4,13 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ClientSummary } from "@/types";
 
-type SortKey = "name" | "sector" | "gap" | "opportunityScore" | "synShare";
+type SortKey =
+  | "name"
+  | "sector"
+  | "gap"
+  | "revenueOpportunity"
+  | "opportunityScore"
+  | "synShare";
 
 const URGENCY_STYLES: Record<ClientSummary["urgency"], string> = {
   High: "bg-red-50 text-red-700 border-red-200",
@@ -13,8 +19,16 @@ const URGENCY_STYLES: Record<ClientSummary["urgency"], string> = {
 };
 
 function formatZAR(value: number) {
+  if (Math.abs(value) >= 1e12) return `R${(value / 1e12).toFixed(2)}T`;
   if (Math.abs(value) >= 1e9) return `R${(value / 1e9).toFixed(2)}B`;
   return `R${(value / 1e6).toFixed(0)}M`;
+}
+
+// Share is now a genuine measurement spanning roughly 0.1%–68%, so a whole-number
+// percentage would collapse most of the portfolio to "0%".
+function formatShare(share: number) {
+  const pct = share * 100;
+  return pct < 10 ? `${pct.toFixed(1)}%` : `${pct.toFixed(0)}%`;
 }
 
 export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
@@ -48,6 +62,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
     { key: "sector", label: "Sector" },
     { key: "synShare", label: "Syn Share" },
     { key: "gap", label: "Wallet Gap" },
+    { key: "revenueOpportunity", label: "Revenue Oppty / yr" },
     { key: "opportunityScore", label: "Opportunity Score" },
   ];
 
@@ -93,15 +108,15 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                   Syn Share
                 </div>
                 <div className="text-sm font-semibold text-[#0032A1]">
-                  {(c.synShare * 100).toFixed(0)}%
+                  {formatShare(c.synShare)}
                 </div>
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wide text-slate-500">
-                  Wallet Gap
+                  Revenue Oppty
                 </div>
                 <div className="text-sm font-semibold text-[#F2A900]">
-                  {formatZAR(c.gap)}
+                  {formatZAR(c.revenueOpportunity)}
                 </div>
               </div>
               <div>
@@ -109,7 +124,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                   Opp. Score
                 </div>
                 <div className="text-sm font-semibold text-[#0032A1]">
-                  {c.opportunityScore}
+                  {c.opportunityScore.toFixed(0)}
                 </div>
               </div>
             </div>
@@ -149,10 +164,13 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                   </td>
                   <td className="px-4 py-3.5 text-slate-600">{c.sector}</td>
                   <td className="px-4 py-3.5 text-slate-700">
-                    {(c.synShare * 100).toFixed(0)}%
+                    {formatShare(c.synShare)}
+                  </td>
+                  <td className="px-4 py-3.5 text-slate-600">
+                    {formatZAR(c.gap)}
                   </td>
                   <td className="px-4 py-3.5 font-semibold text-[#F2A900]">
-                    {formatZAR(c.gap)}
+                    {formatZAR(c.revenueOpportunity)}
                   </td>
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-2">
@@ -163,7 +181,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                         />
                       </div>
                       <span className="text-xs font-medium text-slate-600">
-                        {c.opportunityScore}
+                        {c.opportunityScore.toFixed(0)}
                       </span>
                     </div>
                   </td>

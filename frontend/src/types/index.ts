@@ -15,6 +15,8 @@ export interface ClientSummary {
   wallet: WalletEstimate;
   synVolume: number;
   gap: number;
+  /** Annual ZAR fee revenue the uncaptured gap represents. */
+  revenueOpportunity: number;
   opportunityScore: number; // 0-100
   urgency: "Low" | "Medium" | "High";
   topPillar: Pillar;

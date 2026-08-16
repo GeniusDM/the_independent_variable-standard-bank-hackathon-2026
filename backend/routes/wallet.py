@@ -27,6 +27,7 @@ def _summary_from_row(row) -> ClientSummary:
         ),
         synVolume=float(row["syn_volume"]),
         gap=float(row["gap"]),
+        revenueOpportunity=float(row["revenue_opportunity"]),
         opportunityScore=float(row["opportunity_score"]),
         urgency=row["urgency"],
         topPillar=top_pillar,
