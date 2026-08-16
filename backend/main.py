@@ -20,7 +20,10 @@ app = FastAPI(title="Syn Bank SoW Intelligence Engine", version="1.0.0", lifespa
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://your-project.vercel.app",  # we will replace with your actual Vercel URL-if we deploy to Vercel
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )

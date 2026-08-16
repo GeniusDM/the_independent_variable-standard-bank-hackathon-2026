@@ -1,9 +1,10 @@
 "use client";
+import { AlertTriangle } from "lucide-react";
 
 export default function GlobalError({ reset }: { reset: () => void }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
-      <div className="text-4xl">⚠️</div>
+      <AlertTriangle className="h-10 w-10" />
       <h2 className="text-lg font-semibold text-slate-800">
         Could not reach the SynBank API
       </h2>
