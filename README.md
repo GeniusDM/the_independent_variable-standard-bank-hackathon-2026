@@ -199,8 +199,22 @@ cd frontend && npm run dev
 
 **Notebook**
 
+The full analysis — ingestion, transformation, modelling, visualisation — runs top to
+bottom against the raw CSVs. No API key is required; the GenAI section reads from
+`prompts/cache/`.
+
 ```bash
 jupyter notebook notebooks/share_of_wallet_analysis.ipynb
+
+# or execute it headlessly
+jupyter nbconvert --to notebook --execute --inplace \
+    notebooks/share_of_wallet_analysis.ipynb
+```
+
+**AI client briefings**
+
+```bash
+python scripts/generate_briefings.py          # writes docs/ai_briefings.md
 ```
 
 **Tests**
