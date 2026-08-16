@@ -191,7 +191,28 @@ export default function CopilotChat() {
             >
               {m.role === "assistant" ? (
                 <div className="prose prose-sm max-w-none prose-headings:mb-2 prose-headings:mt-4 prose-headings:text-slate-900 prose-p:my-2 prose-p:text-slate-800 prose-strong:text-slate-900 prose-ul:my-2 prose-li:my-0.5">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content || " "}</ReactMarkdown>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      table: ({ children }) => (
+                        <div className="-mx-1 overflow-x-auto">
+                          <table className="min-w-full text-xs">{children}</table>
+                        </div>
+                      ),
+                      th: ({ children }) => (
+                        <th className="whitespace-nowrap border border-slate-200 bg-slate-100 px-3 py-1.5 text-left font-semibold text-slate-700">
+                          {children}
+                        </th>
+                      ),
+                      td: ({ children }) => (
+                        <td className="whitespace-nowrap border border-slate-200 px-3 py-1.5 text-slate-700">
+                          {children}
+                        </td>
+                      ),
+                    }}
+                  >
+                    {m.content || " "}
+                  </ReactMarkdown>
                 </div>
               ) : (
                 <p>{m.content}</p>

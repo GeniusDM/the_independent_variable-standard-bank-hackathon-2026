@@ -23,12 +23,14 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
     <aside className="flex h-full w-64 shrink-0 flex-col bg-[#0032A1] text-white">
       <div className="border-b border-white/10 px-6 py-7">
         <div className="flex items-center justify-between">
-          <div>
-            <span className="text-xl font-semibold tracking-tight">SynBank</span>
-            <div className="mt-1 text-xs font-medium uppercase tracking-[0.14em] text-white/60">
-              Intelligence Platform
+          <Link href="/">
+            <div>
+              <span className="text-xl font-semibold tracking-tight">SynBank</span>
+              <div className="mt-1 text-xs font-medium uppercase tracking-[0.14em] text-white/60">
+                Intelligence Platform
+              </div>
             </div>
-          </div>
+          </Link>
           {onClose && (
             <button
               onClick={onClose}
@@ -68,8 +70,11 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         <div className="text-[11px] leading-relaxed text-white/45">
           Syn Bank Share of Wallet Intelligence Engine
         </div>
-        <div className="text-[10px] text-white/30">
-          © {new Date().getFullYear()} Syn Bank. All rights reserved.
+        <div className="flex items-center justify-between">
+          <div className="text-[10px] text-white/30">
+            © {new Date().getFullYear()} Syn Bank. All rights reserved.
+          </div>
+          <div className="text-[10px] text-white/30">Version 1.0.0</div>
         </div>
       </div>
     </aside>

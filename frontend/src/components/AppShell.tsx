@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
@@ -21,8 +22,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Menu size={20} />
           </button>
-          <span className="text-sm font-semibold text-[#0032A1]">SynBank</span>
-          <span className="text-xs text-slate-500">Intelligence Platform</span>
+          <Link href="/" className="text-sm font-semibold text-[#0032A1]">
+            SynBank
+          </Link>
           <span className="ml-auto text-[10px] text-slate-400">
             © {new Date().getFullYear()} Syn Bank
           </span>
