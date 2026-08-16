@@ -1,6 +1,6 @@
 # Syn Bank Share of Wallet Intelligence Engine
 
-**Standard Bank × Data School Hackathon 2026 | Team: The Independent Variable**
+## Standard Bank × Data School Hackathon 2026 | Team: The Independent Variable
 
 Estimates the total addressable banking wallet for corporate clients, quantifies Syn Bank's current share across product pillars, ranks growth opportunities, and delivers GenAI-powered executive briefing notes.
 
@@ -30,12 +30,9 @@ The solution integrates multiple datasets provided during the hackathon.
 
 ### External Data
 
-Where appropriate, publicly available corporate information may be incorporated, including:
+Where appropriate, publicly available corporate information was incorporated, including:
 
 - Annual financial statements
-- Investor Relations reports
-- JSE SENS announcements
-- National Treasury publications
 - Company financial disclosures
 
 ## Methodology
@@ -54,12 +51,6 @@ The dashboard provides multiple business views, including:
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" height="50" alt="Python"/>
 <img width="12"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" height="50" alt="Pandas"/>
-<img width="12"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg" height="50" alt="NumPy"/>
-<img width="12"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" height="50" alt="Scikit-Learn"/>
-<img width="12"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/plotly/plotly-original.svg" height="50" alt="Plotly"/>
 <img width="12"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" height="50" alt="FastAPI"/>
 <img width="12"/>
