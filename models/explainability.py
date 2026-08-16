@@ -121,6 +121,10 @@ def build_briefing_payload(row: pd.Series) -> dict:
         "recommendedAgenda": agenda,
         "risk": risk,
         "sources": sources,
+        # The full computed row, so the GenAI layer can build its evidence block
+        # from the same numbers rather than re-deriving any of them. Popped by
+        # ai.briefing before the payload is returned over the API.
+        "_row": row,
     }
 
 

@@ -6,6 +6,9 @@ sentence shown to a banker is derived from a computed field, never invented.
 
 from __future__ import annotations
 
+import pytest
+
+from ai import llm
 from models.explainability import (
     PITCH_BY_PILLAR,
     add_explainability_fields,
@@ -73,3 +76,56 @@ def test_briefing_cites_grounding_sources(wallet_df):
     payload = build_briefing_payload(wallet_df.iloc[0])
     assert any(s.startswith("client_id=") for s in payload["sources"])
     assert any(s.startswith("gap=") for s in payload["sources"])
+
+
+# --- GenAI grounding guard ------------------------------------------------
+#
+# The point of the guard is to catch a model inventing a plausible-looking rand
+# figure. These tests pin that behaviour without needing a live provider.
+
+def test_grounding_accepts_figures_that_came_from_the_evidence():
+    facts = "Estimated share of wallet: 2.3%\nUncaptured flow gap: R647.67B"
+    text = "Syn Bank holds an estimated 2.3% of this client, leaving R647.67B uncaptured."
+    assert llm.verify_grounding(text, facts) == []
+
+
+def test_grounding_flags_an_invented_figure():
+    facts = "Estimated share of wallet: 2.3%\nUncaptured flow gap: R647.67B"
+    text = "Share is 2.3%, and we expect to win R99.9B within twelve months."
+    assert "R99.9B" in llm.verify_grounding(text, facts)
+
+
+def test_grounding_flags_a_silently_altered_percentage():
+    facts = "Estimated share of wallet: 2.3%"
+    text = "Syn Bank already holds 23% of this client."
+    assert "23%" in llm.verify_grounding(text, facts)
+
+
+def test_grounding_ignores_spacing_differences():
+    facts = "Uncaptured flow gap: R647.67B"
+    assert llm.verify_grounding("The gap is R 647.67B.", facts) == []
+
+
+def test_no_provider_configured_raises_so_callers_can_fall_back(monkeypatch):
+    for name in ("GEMINI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("GENAI_PROVIDER", "")
+    assert llm.active_provider() == "none"
+    with pytest.raises(llm.LLMUnavailable):
+        llm.generate("system", "prompt")
+
+
+def test_briefing_falls_back_to_deterministic_without_a_provider(monkeypatch):
+    """The dashboard must still produce a usable briefing with no API key."""
+    for name in ("GEMINI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("GENAI_PROVIDER", "")
+
+    from ai.briefing import generate_briefing
+
+    payload = generate_briefing("E09")
+    assert payload["generatedBy"] == "deterministic"
+    assert payload["summary"]
+    assert payload["keySignals"]
+    # The internal row must never reach the API response.
+    assert "_row" not in payload

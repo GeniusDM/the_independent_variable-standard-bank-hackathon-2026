@@ -65,4 +65,5 @@ def retrieve_briefing(identifier: str) -> tuple[dict | None, list[str]]:
         return None, []
 
     payload = build_briefing_payload(row)
-    return payload, sources + payload.get("sources", [])
+    combined = sources + [s for s in payload.get("sources", []) if s not in sources]
+    return payload, combined

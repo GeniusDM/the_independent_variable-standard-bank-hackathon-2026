@@ -58,3 +58,9 @@ class CopilotMessage(BaseModel):
     role: Literal["assistant"]
     content: str
     sources: list[str]
+    # Which path produced the answer — a live model, or the deterministic
+    # fallback. Exposed so the AI contribution is visible rather than implied.
+    generatedBy: str = "deterministic"
+    latencyMs: Optional[int] = None
+    cached: bool = False
+    groundingWarnings: list[str] = []
