@@ -4,13 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ClientSummary } from "@/types";
 
-type SortKey =
-  | "name"
-  | "sector"
-  | "gap"
-  | "revenueOpportunity"
-  | "opportunityScore"
-  | "synShare";
+type SortKey = "name" | "sector" | "gap" | "revenueOpportunity" | "opportunityScore" | "synShare";
 
 const URGENCY_STYLES: Record<ClientSummary["urgency"], string> = {
   High: "bg-red-50 text-red-700 border-red-200",
@@ -41,8 +35,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
       const dir = sortDir === "asc" ? 1 : -1;
       const av = a[sortKey];
       const bv = b[sortKey];
-      if (typeof av === "string" && typeof bv === "string")
-        return av.localeCompare(bv) * dir;
+      if (typeof av === "string" && typeof bv === "string") return av.localeCompare(bv) * dir;
       return ((av as number) - (bv as number)) * dir;
     });
     return copy;
@@ -91,9 +84,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <div className="truncate text-sm font-semibold text-slate-900">
-                  {c.name}
-                </div>
+                <div className="truncate text-sm font-semibold text-slate-900">{c.name}</div>
                 <div className="text-xs text-slate-500">{c.sector}</div>
               </div>
               <span
@@ -104,9 +95,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div>
-                <div className="text-[10px] uppercase tracking-wide text-slate-500">
-                  Syn Share
-                </div>
+                <div className="text-[10px] uppercase tracking-wide text-slate-500">Syn Share</div>
                 <div className="text-sm font-semibold text-[#0032A1]">
                   {formatShare(c.synShare)}
                 </div>
@@ -120,9 +109,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                 </div>
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-wide text-slate-500">
-                  Opp. Score
-                </div>
+                <div className="text-[10px] uppercase tracking-wide text-slate-500">Opp. Score</div>
                 <div className="text-sm font-semibold text-[#0032A1]">
                   {c.opportunityScore.toFixed(0)}
                 </div>
@@ -144,8 +131,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                     onClick={() => toggleSort(h.key)}
                     className="cursor-pointer select-none whitespace-nowrap px-4 py-3.5 font-semibold hover:text-[#0032A1]"
                   >
-                    {h.label}{" "}
-                    {sortKey === h.key && (sortDir === "asc" ? "↑" : "↓")}
+                    {h.label} {sortKey === h.key && (sortDir === "asc" ? "↑" : "↓")}
                   </th>
                 ))}
                 <th className="px-4 py-3.5 font-semibold">Urgency</th>
@@ -163,12 +149,8 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                     </Link>
                   </td>
                   <td className="px-4 py-3.5 text-slate-600">{c.sector}</td>
-                  <td className="px-4 py-3.5 text-slate-700">
-                    {formatShare(c.synShare)}
-                  </td>
-                  <td className="px-4 py-3.5 text-slate-600">
-                    {formatZAR(c.gap)}
-                  </td>
+                  <td className="px-4 py-3.5 text-slate-700">{formatShare(c.synShare)}</td>
+                  <td className="px-4 py-3.5 text-slate-600">{formatZAR(c.gap)}</td>
                   <td className="px-4 py-3.5 font-semibold text-[#F2A900]">
                     {formatZAR(c.revenueOpportunity)}
                   </td>

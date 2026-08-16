@@ -5,9 +5,7 @@ export default function GlobalError({ reset }: { reset: () => void }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
       <AlertTriangle className="h-10 w-10" />
-      <h2 className="text-lg font-semibold text-slate-800">
-        Could not reach the SynBank API
-      </h2>
+      <h2 className="text-lg font-semibold text-slate-800">Could not reach the SynBank API</h2>
       <p className="max-w-sm text-sm text-slate-500">
         Make sure the FastAPI backend is running:
         <code className="ml-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700">

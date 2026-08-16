@@ -9,11 +9,7 @@ function formatZAR(value: number) {
 }
 
 // Next.js 15: dynamic route params are async — adjust if your project is on Next 14.
-export default async function ClientDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const client = await getClient(id);
   const briefing = await getBriefing(id);
@@ -21,10 +17,7 @@ export default async function ClientDetailPage({
   if (!client) {
     return (
       <div>
-        <Link
-          href="/clients"
-          className="text-sm text-[#0032A1] hover:underline"
-        >
+        <Link href="/clients" className="text-sm text-[#0032A1] hover:underline">
           ← Back to clients
         </Link>
         <p className="mt-4 text-sm text-slate-500">Client not found.</p>
@@ -54,8 +47,7 @@ export default async function ClientDetailPage({
             {formatZAR(client.wallet.base)}
           </div>
           <div className="text-xs text-slate-500">
-            Range {formatZAR(client.wallet.low)} –{" "}
-            {formatZAR(client.wallet.high)}
+            Range {formatZAR(client.wallet.low)} – {formatZAR(client.wallet.high)}
           </div>
           <div className="text-xs text-slate-500">
             Confidence {(client.wallet.confidence * 100).toFixed(0)}%
@@ -70,9 +62,7 @@ export default async function ClientDetailPage({
               ? `${(client.synShare * 100).toFixed(1)}%`
               : `${(client.synShare * 100).toFixed(0)}%`}
           </div>
-          <div className="text-xs text-slate-500">
-            {formatZAR(client.synVolume)} captured
-          </div>
+          <div className="text-xs text-slate-500">{formatZAR(client.synVolume)} captured</div>
         </div>
         <div className="rounded-[var(--radius-panel)] border border-slate-200/90 bg-white p-4 shadow-[var(--shadow-panel)]">
           <div className="text-[11px] uppercase tracking-[0.1em] text-slate-500">
@@ -81,9 +71,7 @@ export default async function ClientDetailPage({
           <div className="mt-1 text-xl font-semibold text-[#F2A900]">
             {formatZAR(client.revenueOpportunity)}
           </div>
-          <div className="text-xs text-slate-500">
-            on a {formatZAR(client.gap)} flow gap
-          </div>
+          <div className="text-xs text-slate-500">on a {formatZAR(client.gap)} flow gap</div>
         </div>
         <div className="rounded-[var(--radius-panel)] border border-slate-200/90 bg-white p-4 shadow-[var(--shadow-panel)]">
           <div className="text-[11px] uppercase tracking-[0.1em] text-slate-500">
@@ -99,18 +87,14 @@ export default async function ClientDetailPage({
         <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           Why This Client
         </h2>
-        <p className="text-sm leading-relaxed text-slate-800">
-          {client.whySignal}
-        </p>
+        <p className="text-sm leading-relaxed text-slate-800">{client.whySignal}</p>
       </div>
 
       <div>
         <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
           What to Pitch
         </h2>
-        <p className="text-sm leading-relaxed text-slate-800">
-          {client.whatToPitch}
-        </p>
+        <p className="text-sm leading-relaxed text-slate-800">{client.whatToPitch}</p>
       </div>
 
       <ClientBriefingCard briefing={briefing} />

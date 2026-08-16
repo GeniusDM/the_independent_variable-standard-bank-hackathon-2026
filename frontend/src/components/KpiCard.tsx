@@ -5,12 +5,7 @@ interface KpiCardProps {
   accent?: boolean;
 }
 
-export default function KpiCard({
-  label,
-  value,
-  sublabel,
-  accent,
-}: KpiCardProps) {
+export default function KpiCard({ label, value, sublabel, accent }: KpiCardProps) {
   return (
     <div className="relative overflow-hidden rounded-[var(--radius-panel)] border border-slate-200/90 bg-[var(--surface)] p-5 shadow-[var(--shadow-panel)]">
       <div
@@ -26,9 +21,7 @@ export default function KpiCard({
       >
         {value}
       </div>
-      {sublabel && (
-        <div className="mt-2 text-xs text-slate-500">{sublabel}</div>
-      )}
+      {sublabel && <div className="mt-2 text-xs text-slate-500">{sublabel}</div>}
     </div>
   );
 }

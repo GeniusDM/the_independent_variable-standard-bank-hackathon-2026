@@ -48,7 +48,8 @@ export const MOCK_CLIENTS: ClientSummary[] = [
     opportunityScore: 87,
     urgency: "High",
     topPillar: "FX",
-    whySignal: "72% foreign revenue exposure with Syn Bank processing only 15% of related FX payments.",
+    whySignal:
+      "72% foreign revenue exposure with Syn Bank processing only 15% of related FX payments.",
     whatToPitch: "FX hedging programme for USD-denominated export receivables.",
   },
   {
@@ -95,7 +96,8 @@ export const MOCK_CLIENTS: ClientSummary[] = [
     topPillar: "Investment Banking",
     whySignal:
       "Large capex pipeline announced in a recent SENS filing with no visible Syn Bank project finance activity.",
-    whatToPitch: "Project finance / syndicated lending pitch tied to the announced capex programme.",
+    whatToPitch:
+      "Project finance / syndicated lending pitch tied to the announced capex programme.",
   },
 ];
 
@@ -124,17 +126,29 @@ export function getMockPortfolio(): PortfolioSummary {
 export function getMockBriefing(clientId: string): Briefing {
   const client = MOCK_CLIENTS.find((c) => c.id === clientId);
   if (!client) {
-    return { clientId, summary: "No briefing available for this client yet.", keySignals: [], recommendedAgenda: [], risk: null };
+    return {
+      clientId,
+      summary: "No briefing available for this client yet.",
+      keySignals: [],
+      recommendedAgenda: [],
+      risk: null,
+    };
   }
   return {
     clientId,
     summary: `${client.name} shows an estimated wallet gap of R${(client.gap / 1e6).toFixed(0)}M, concentrated in ${client.topPillar}. ${client.whySignal}`,
-    keySignals: [client.whySignal, `Current Syn Bank share: ${(client.synShare * 100).toFixed(0)}%`],
+    keySignals: [
+      client.whySignal,
+      `Current Syn Bank share: ${(client.synShare * 100).toFixed(0)}%`,
+    ],
     recommendedAgenda: [
       client.whatToPitch,
       "Confirm current banking panel and relationship owner",
       "Align on pricing ahead of the pitch",
     ],
-    risk: client.urgency === "High" ? "Time-sensitive — competitor activity is likely already underway." : null,
+    risk:
+      client.urgency === "High"
+        ? "Time-sensitive — competitor activity is likely already underway."
+        : null,
   };
 }

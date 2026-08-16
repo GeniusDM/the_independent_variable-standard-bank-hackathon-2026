@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { ClientSummary, Pillar } from "@/types";
 
-const PILLARS: Pillar[] = [
-  "Transactional",
-  "FX",
-  "Trade Finance",
-  "Investment Banking",
-];
+const PILLARS: Pillar[] = ["Transactional", "FX", "Trade Finance", "Investment Banking"];
 
 // Deterministic per-client per-pillar score derived from the composite score
 // so the heatmap is meaningful without extra API fields.
@@ -29,7 +24,7 @@ function cellColor(score: number): string {
   if (score >= 40) return "#fc4e2a";
   if (score >= 28) return "#fd8d3c";
   if (score >= 16) return "#feb24c";
-  if (score >= 6)  return "#fed976";
+  if (score >= 6) return "#fed976";
   return "#ffffcc";
 }
 
@@ -44,28 +39,20 @@ const URGENCY_DOT: Record<ClientSummary["urgency"], string> = {
 };
 
 const LEGEND = [
-  { label: "0",   color: "#ffffcc" },
-  { label: "25",  color: "#fed976" },
-  { label: "50",  color: "#fd8d3c" },
-  { label: "75",  color: "#e31a1c" },
+  { label: "0", color: "#ffffcc" },
+  { label: "25", color: "#fed976" },
+  { label: "50", color: "#fd8d3c" },
+  { label: "75", color: "#e31a1c" },
   { label: "100", color: "#800026" },
 ];
 
-export default function OpportunityHeatmap({
-  clients,
-}: {
-  clients: ClientSummary[];
-}) {
-  const sorted = [...clients].sort(
-    (a, b) => b.opportunityScore - a.opportunityScore,
-  );
+export default function OpportunityHeatmap({ clients }: { clients: ClientSummary[] }) {
+  const sorted = [...clients].sort((a, b) => b.opportunityScore - a.opportunityScore);
 
   if (sorted.length === 0) {
     return (
       <div className="rounded-[var(--radius-panel)] border border-dashed border-slate-300 bg-white p-8 text-center">
-        <p className="text-sm font-medium text-slate-700">
-          No opportunities available.
-        </p>
+        <p className="text-sm font-medium text-slate-700">No opportunities available.</p>
         <p className="mt-1 text-xs text-slate-500">
           Opportunity scoring output will appear here once data loads.
         </p>
@@ -117,10 +104,7 @@ export default function OpportunityHeatmap({
           </thead>
           <tbody>
             {sorted.map((c, i) => (
-              <tr
-                key={c.id}
-                className={i % 2 === 0 ? "bg-white" : "bg-slate-50/50"}
-              >
+              <tr key={c.id} className={i % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
                 {/* Client name */}
                 <td className="border-b border-slate-100 px-4 py-2">
                   <div className="flex items-center gap-2">
@@ -134,19 +118,14 @@ export default function OpportunityHeatmap({
                       {c.name}
                     </Link>
                   </div>
-                  <div className="ml-3.5 text-[10px] text-slate-400">
-                    {c.sector}
-                  </div>
+                  <div className="ml-3.5 text-[10px] text-slate-400">{c.sector}</div>
                 </td>
 
                 {/* Pillar cells */}
                 {PILLARS.map((p) => {
                   const score = pillarScore(c, p);
                   return (
-                    <td
-                      key={p}
-                      className="border-b border-slate-100 px-1 py-1 text-center"
-                    >
+                    <td key={p} className="border-b border-slate-100 px-1 py-1 text-center">
                       <div
                         className="mx-auto flex h-9 w-full min-w-[52px] items-center justify-center rounded font-semibold transition-transform hover:scale-105"
                         style={{

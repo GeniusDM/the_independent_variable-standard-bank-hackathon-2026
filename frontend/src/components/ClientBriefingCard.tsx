@@ -1,10 +1,6 @@
 import { Briefing } from "@/types";
 
-export default function ClientBriefingCard({
-  briefing,
-}: {
-  briefing: Briefing;
-}) {
+export default function ClientBriefingCard({ briefing }: { briefing: Briefing }) {
   return (
     <div className="rounded-[var(--radius-panel)] border border-slate-200/90 bg-white p-5 shadow-[var(--shadow-panel)]">
       <div className="mb-3 flex items-center gap-2">
@@ -13,9 +9,7 @@ export default function ClientBriefingCard({
           AI Briefing
         </span>
       </div>
-      <p className="text-sm leading-relaxed text-slate-800">
-        {briefing.summary}
-      </p>
+      <p className="text-sm leading-relaxed text-slate-800">{briefing.summary}</p>
 
       {briefing.keySignals.length > 0 && (
         <div className="mt-4">
