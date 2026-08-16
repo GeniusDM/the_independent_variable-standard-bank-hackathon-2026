@@ -137,6 +137,19 @@ source .venv/bin/activate          # macOS / Linux
 pip install -r requirements.txt
 ```
 
+> **Windows note.** If the repo sits under a long path (e.g. inside a synced
+> OneDrive folder), installing JupyterLab fails with
+> `[WinError 206] The filename or extension is too long` — its nested
+> `share/jupyter/labextensions/@jupyter-widgets/...` paths overrun the 260-character
+> limit. Create the environment somewhere short instead, and keep it out of the
+> synced folder so the file watcher can't lock packages mid-install:
+>
+> ```bat
+> python -m venv %USERPROFILE%\.venvs\synbank
+> %USERPROFILE%\.venvs\synbank\Scripts\activate
+> pip install -r requirements.txt
+> ```
+
 **2. Node packages**
 
 ```bash
