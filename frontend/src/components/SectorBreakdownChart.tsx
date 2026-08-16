@@ -84,8 +84,21 @@ export default function SectorBreakdownChart({ data }: { data: SectorRow[] }) {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 16 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-            <XAxis type="number" tickFormatter={formatZAR} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis type="category" dataKey="sector" width={130} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+            <XAxis
+              type="number"
+              tickFormatter={formatZAR}
+              tick={{ fontSize: 11 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis
+              type="category"
+              dataKey="sector"
+              width={130}
+              tick={{ fontSize: 11 }}
+              axisLine={false}
+              tickLine={false}
+            />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f8fafc" }} />
             <Bar dataKey="Syn Bank Volume" stackId="a" fill="#0032A1" radius={[0, 0, 0, 0]} />
             <Bar dataKey="Wallet Gap" stackId="a" fill="#F2A900" radius={[0, 3, 3, 0]} />
