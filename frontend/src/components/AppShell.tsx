@@ -13,7 +13,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile topbar */}
-        <header className="flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
+        <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
             className="rounded-lg p-1.5 text-slate-600 hover:bg-slate-100"

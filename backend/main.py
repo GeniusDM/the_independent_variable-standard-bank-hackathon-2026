@@ -22,7 +22,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://your-project.vercel.app",  # we will replace with your actual Vercel URL-if we deploy to Vercel
+        "https://synbank.vercel.app",  # Vercel Frontend
     ],
     allow_methods=["*"],
     allow_headers=["*"],
