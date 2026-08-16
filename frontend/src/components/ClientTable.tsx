@@ -6,11 +6,26 @@ import { ClientSummary } from "@/types";
 
 type SortKey = "name" | "sector" | "gap" | "revenueOpportunity" | "opportunityScore" | "synShare";
 
-const URGENCY_STYLES: Record<ClientSummary["urgency"], string> = {
-  High: "bg-red-50 text-red-700 border-red-200",
-  Medium: "bg-amber-50 text-amber-700 border-amber-200",
-  Low: "bg-slate-50 text-slate-600 border-slate-200",
+const URGENCY_CONFIG: Record<
+  ClientSummary["urgency"],
+  { bar: string; label: string; text: string }
+> = {
+  High: { bar: "bg-red-500", label: "bg-red-50 text-red-600", text: "High" },
+  Medium: { bar: "bg-amber-400", label: "bg-amber-50 text-amber-600", text: "Medium" },
+  Low: { bar: "bg-slate-300", label: "bg-slate-100 text-slate-500", text: "Low" },
 };
+
+function UrgencyBadge({ urgency }: { urgency: ClientSummary["urgency"] }) {
+  const cfg = URGENCY_CONFIG[urgency];
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded px-2 py-1 text-[11px] font-semibold tracking-wide ${cfg.label}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${cfg.bar}`} />
+      {cfg.text}
+    </span>
+  );
+}
 
 function formatZAR(value: number) {
   if (Math.abs(value) >= 1e12) return `R${(value / 1e12).toFixed(2)}T`;
@@ -87,11 +102,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                 <div className="truncate text-sm font-semibold text-slate-900">{c.name}</div>
                 <div className="text-xs text-slate-500">{c.sector}</div>
               </div>
-              <span
-                className={`shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium ${URGENCY_STYLES[c.urgency]}`}
-              >
-                {c.urgency}
-              </span>
+              <UrgencyBadge urgency={c.urgency} />
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div>
@@ -168,11 +179,7 @@ export default function ClientTable({ clients }: { clients: ClientSummary[] }) {
                     </div>
                   </td>
                   <td className="px-4 py-3.5">
-                    <span
-                      className={`rounded-full border px-2 py-0.5 text-xs font-medium ${URGENCY_STYLES[c.urgency]}`}
-                    >
-                      {c.urgency}
-                    </span>
+                    <UrgencyBadge urgency={c.urgency} />
                   </td>
                 </tr>
               ))}
