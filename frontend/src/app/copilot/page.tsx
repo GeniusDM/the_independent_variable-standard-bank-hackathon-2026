@@ -8,8 +8,7 @@ export default function CopilotPage() {
           AI Copilot
         </h1>
         <p className="text-sm text-slate-600">
-          Grounded answers over the portfolio wallet and opportunity
-          intelligence layer
+          Grounded answers over the portfolio wallet and opportunity intelligence layer
         </p>
       </div>
       <CopilotChat />

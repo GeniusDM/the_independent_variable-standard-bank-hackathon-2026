@@ -60,10 +60,7 @@ export default function CopilotChat() {
     };
   }, []);
 
-  const canSend = useMemo(
-    () => input.trim().length > 0 && !loading,
-    [input, loading],
-  );
+  const canSend = useMemo(() => input.trim().length > 0 && !loading, [input, loading]);
 
   function resetConversation() {
     if (streamRef.current) {
@@ -76,11 +73,7 @@ export default function CopilotChat() {
     sessionStorage.removeItem(STORAGE_KEY);
   }
 
-  function streamAssistantReply(
-    messageId: string,
-    fullText: string,
-    done: () => void,
-  ) {
+  function streamAssistantReply(messageId: string, fullText: string, done: () => void) {
     if (streamRef.current) clearInterval(streamRef.current);
 
     let cursor = 0;
@@ -90,9 +83,7 @@ export default function CopilotChat() {
       cursor = Math.min(fullText.length, cursor + charsPerTick);
       const partial = fullText.slice(0, cursor);
 
-      setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, content: partial } : m)),
-      );
+      setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, content: partial } : m)));
 
       if (cursor >= fullText.length) {
         if (streamRef.current) clearInterval(streamRef.current);
@@ -123,15 +114,10 @@ export default function CopilotChat() {
     try {
       const reply = await askCopilot(question);
       const responseText =
-        reply.content.trim() ||
-        "No grounded answer could be generated for that request.";
+        reply.content.trim() || "No grounded answer could be generated for that request.";
 
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === assistantMessage.id
-            ? { ...m, sources: reply.sources ?? [] }
-            : m,
-        ),
+        prev.map((m) => (m.id === assistantMessage.id ? { ...m, sources: reply.sources ?? [] } : m))
       );
 
       streamAssistantReply(assistantMessage.id, responseText, () => {
@@ -143,12 +129,11 @@ export default function CopilotChat() {
           m.id === assistantMessage.id
             ? {
                 ...m,
-                content:
-                  "I could not generate a response right now. Please try again.",
+                content: "I could not generate a response right now. Please try again.",
                 sources: [],
               }
-            : m,
-        ),
+            : m
+        )
       );
       setLoading(false);
     }
@@ -158,9 +143,7 @@ export default function CopilotChat() {
     <div className="flex h-[calc(100dvh-10rem)] min-h-[480px] flex-col rounded-[var(--radius-panel)] border border-slate-200/90 bg-white shadow-[var(--shadow-panel)] lg:h-[calc(100vh-11rem)] lg:min-h-[620px]">
       <div className="flex items-center justify-between border-b border-slate-200/80 bg-[var(--surface-muted)] px-4 py-3">
         <div>
-          <div className="text-sm font-semibold text-slate-900">
-            SynBank Copilot
-          </div>
+          <div className="text-sm font-semibold text-slate-900">SynBank Copilot</div>
           <div className="text-xs text-slate-600">
             Grounded on portfolio wallet and opportunity signals
           </div>
@@ -174,10 +157,7 @@ export default function CopilotChat() {
         </button>
       </div>
 
-      <div
-        ref={scrollRef}
-        className="flex-1 space-y-5 overflow-y-auto bg-white p-5"
-      >
+      <div ref={scrollRef} className="flex-1 space-y-5 overflow-y-auto bg-white p-5">
         {messages.length === 0 && (
           <div className="rounded-xl border border-slate-200/80 bg-slate-50 p-4">
             <div className="mb-3 text-sm font-medium text-slate-700">
@@ -211,9 +191,7 @@ export default function CopilotChat() {
             >
               {m.role === "assistant" ? (
                 <div className="prose prose-sm max-w-none prose-headings:mb-2 prose-headings:mt-4 prose-headings:text-slate-900 prose-p:my-2 prose-p:text-slate-800 prose-strong:text-slate-900 prose-ul:my-2 prose-li:my-0.5">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {m.content || " "}
-                  </ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content || " "}</ReactMarkdown>
                 </div>
               ) : (
                 <p>{m.content}</p>
@@ -247,9 +225,7 @@ export default function CopilotChat() {
           </div>
         )}
 
-        {!hydrated && (
-          <div className="text-xs text-slate-400">Loading conversation...</div>
-        )}
+        {!hydrated && <div className="text-xs text-slate-400">Loading conversation...</div>}
       </div>
 
       <form

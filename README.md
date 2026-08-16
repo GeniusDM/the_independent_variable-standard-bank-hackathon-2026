@@ -1,6 +1,6 @@
 # Syn Bank Share of Wallet Intelligence Engine
 
-**Standard Bank × Data School Hackathon 2026 | Team: The Independent Variable**
+## Standard Bank × Data School Hackathon 2026 | Team: The Independent Variable
 
 Estimates the total addressable banking wallet for corporate clients, quantifies Syn Bank's current share across product pillars, ranks growth opportunities, and delivers GenAI-powered executive briefing notes.
 
@@ -30,12 +30,9 @@ The solution integrates multiple datasets provided during the hackathon.
 
 ### External Data
 
-Where appropriate, publicly available corporate information may be incorporated, including:
+Where appropriate, publicly available corporate information was incorporated, including:
 
 - Annual financial statements
-- Investor Relations reports
-- JSE SENS announcements
-- National Treasury publications
 - Company financial disclosures
 
 ## Methodology
@@ -46,7 +43,10 @@ See [docs/methodology.md](docs/methodology.md) for wallet sizing logic, benchmar
 
 The dashboard provides multiple business views, including:
 
-- N/A
+- **Portfolio Overview** — macro KPI cards (total wallet, average share %, total ZAR gap, number of clients), sector breakdown bar chart, and a ranked client table sortable by opportunity score
+- **Opportunity Heatmap** — interactive matrix of all 50 clients vs. the four product pillars (Transactional, FX, Trade Finance, Lending), colour-coded by ZAR gap size to surface where competitors are winning
+- **Client Deep-Dive** — individual client profile with pillar-level wallet vs. Syn Bank share bars, transaction timeline, and a one-click GenAI briefing note card
+- **AI Copilot** — natural language query bar (e.g. _"Show me mining clients with FX gap above R5M"_) that filters the dataset and returns a plain-English narrative alongside the matching results
 
 ## Languages and Tech Stack
 
@@ -54,12 +54,6 @@ The dashboard provides multiple business views, including:
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" height="50" alt="Python"/>
 <img width="12"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" height="50" alt="Pandas"/>
-<img width="12"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg" height="50" alt="NumPy"/>
-<img width="12"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" height="50" alt="Scikit-Learn"/>
-<img width="12"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/plotly/plotly-original.svg" height="50" alt="Plotly"/>
 <img width="12"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" height="50" alt="FastAPI"/>
 <img width="12"/>
@@ -77,41 +71,80 @@ The dashboard provides multiple business views, including:
 ```
 the_independent_variable-standard-bank-hackathon-2026/
 ├── README.md
-├── start.py                     # dev launcher — starts backend + frontend together
+├── start.py                     # starts backend + frontend together
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
 ├── config/
-│   ├── benchmarks.yaml          # wallet sizing ratios — single source of truth
+│   ├── benchmarks.yaml          # wallet sizing ratios
 │   └── scoring_weights.yaml     # opportunity score weights
 ├── data/                        # local only, git-ignored
 │   ├── raw/
 │   ├── processed/
 │   └── external/
-├── frontend/                    # Next.js executive dashboard
-│   ├── pages/
-│   ├── components/
-│   └── assets/
-├── backend/                     # FastAPI backend
+├── frontend/                         # Next.js dashboard
+│   ├── src/
+│   │   ├── app/                      # App Router pages
+│   │   │   ├── page.tsx              # Portfolio Overview
+│   │   │   ├── layout.tsx
+│   │   │   ├── clients/
+│   │   │   │   ├── page.tsx          # Client list
+│   │   │   │   └── [id]/page.tsx     # Client Deep-Dive
+│   │   │   ├── opportunities/
+│   │   │   │   └── page.tsx          # Opportunity Heatmap
+│   │   │   └── copilot/
+│   │   │       └── page.tsx          # AI Copilot chat
+│   │   ├── components/
+│   │   │   ├── AppShell.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── KpiCard.tsx
+│   │   │   ├── ClientTable.tsx
+│   │   │   ├── ClientBriefingCard.tsx
+│   │   │   ├── OpportunityHeatmap.tsx
+│   │   │   ├── SectorBreakdownChart.tsx
+│   │   │   └── CopilotChat.tsx
+│   │   ├── lib/
+│   │   │   ├── api.ts                # fetch wrappers for FastAPI
+│   │   │   └── mockData.ts           # offline fallback data
+│   │   └── types/
+│   │       └── index.ts              # shared TypeScript interfaces
+│   ├── public/
+│   ├── next.config.ts
+│   ├── tailwind.config.ts
+│   └── package.json
+├── backend/                          # FastAPI backend
 │   ├── main.py
 │   ├── routes/
+│   │   ├── wallet.py
+│   │   ├── opportunities.py
+│   │   ├── briefings.py
+│   │   └── copilot.py
 │   └── schemas.py
 ├── models/
-│   ├── wallet_engine.py         # wallet sizing formulas
-│   ├── opportunity_engine.py    # opportunity scoring & ranking
-│   └── explainability.py       # plain-English gap explanations
+│   ├── wallet_engine.py              # wallet sizing formulas
+│   ├── opportunity_engine.py         # opportunity scoring & ranking
+│   └── explainability.py            # plain-English gap explanations
 ├── ai/
-│   ├── retrieval.py             # FAISS RAG over financial documents
-│   ├── briefing.py              # GenAI client briefing generator
-│   └── copilot.py               # natural language query interface
-├── prompts/                     # prompt templates + sample output logs
+│   ├── retrieval.py                  # FAISS RAG over financial documents
+│   ├── briefing.py                   # GenAI client briefing generator
+│   ├── copilot.py                    # natural language query interface
+│   └── llm.py                        # LLM provider abstraction
+├── scripts/
+│   ├── generate_briefings.py         # writes docs/ai_briefings.md
+│   └── build_notebook.py
+├── prompts/
+│   ├── logs/                         # per-client briefing outputs
+│   └── cache/                        # cached LLM responses
 ├── notebooks/
 │   └── share_of_wallet_analysis.ipynb
 ├── docs/
+│   ├── figures/                      # charts exported from notebook
 │   ├── methodology.md
+│   ├── ai_briefings.md
 │   ├── executive_summary.pdf
 │   └── presentation_deck.pptx
 └── tests/
+    ├── conftest.py
     ├── test_wallet_engine.py
     ├── test_opportunity_engine.py
     └── test_ai_outputs.py
@@ -254,7 +287,7 @@ Judges scan the QR code → Vercel frontend → ngrok tunnel → local FastAPI b
 
 ---
 
-## Team
+## Contact Us
 
 **Daniel Genius Mataranyinka**
 

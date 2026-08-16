@@ -10,10 +10,7 @@ function formatZAR(value: number) {
 }
 
 export default async function PortfolioPage() {
-  const [portfolio, clients] = await Promise.all([
-    getPortfolio(),
-    getClients(),
-  ]);
+  const [portfolio, clients] = await Promise.all([getPortfolio(), getClients()]);
   const topOpportunities = [...clients]
     .sort((a, b) => b.opportunityScore - a.opportunityScore)
     .slice(0, 5);
@@ -31,24 +28,12 @@ export default async function PortfolioPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-        <KpiCard
-          label="Total Wallet"
-          value={formatZAR(portfolio.totalWallet)}
-        />
-        <KpiCard
-          label="Syn Bank Share"
-          value={`${(portfolio.synShare * 100).toFixed(1)}%`}
-        />
-        <KpiCard
-          label="Total Opportunity Gap"
-          value={formatZAR(portfolio.totalGap)}
-          accent
-        />
+        <KpiCard label="Total Wallet" value={formatZAR(portfolio.totalWallet)} />
+        <KpiCard label="Syn Bank Share" value={`${(portfolio.synShare * 100).toFixed(1)}%`} />
+        <KpiCard label="Total Opportunity Gap" value={formatZAR(portfolio.totalGap)} accent />
         <KpiCard
           label="Revenue Oppty / yr"
-          value={formatZAR(
-            clients.reduce((sum, c) => sum + c.revenueOpportunity, 0),
-          )}
+          value={formatZAR(clients.reduce((sum, c) => sum + c.revenueOpportunity, 0))}
           accent
         />
       </div>
