@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import pytest
 
+from conftest import requires_raw_data
+
 from ai import llm
 from models.explainability import (
     PITCH_BY_PILLAR,
@@ -115,8 +117,12 @@ def test_no_provider_configured_raises_so_callers_can_fall_back(monkeypatch):
         llm.generate("system", "prompt")
 
 
+@requires_raw_data
 def test_briefing_falls_back_to_deterministic_without_a_provider(monkeypatch):
-    """The dashboard must still produce a usable briefing with no API key."""
+    """The dashboard must still produce a usable briefing with no API key.
+
+    Needs the real datasets because it runs the full retrieval path.
+    """
     for name in ("GEMINI_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("GENAI_PROVIDER", "")

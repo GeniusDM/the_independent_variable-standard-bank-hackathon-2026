@@ -14,7 +14,24 @@ import pandas as pd
 import pytest
 
 # Allow `import models...` when pytest is invoked from anywhere.
-sys.path.insert(0, str(Path(__file__).parents[1]))
+ROOT = Path(__file__).parents[1]
+sys.path.insert(0, str(ROOT))
+
+RAW_DIR = ROOT / "data" / "raw"
+RAW_FILES = (
+    "transactional_banking.csv",
+    "cross_border_payments.csv",
+    "trade_finance.csv",
+)
+
+#: The supplied datasets are ~429MB and are deliberately not in the repo, so a
+#: fresh clone has no data/raw/. Tests that exercise the full pipeline are
+#: skipped there rather than failing, keeping `pytest tests/` green for anyone
+#: who clones the repo before placing the CSVs.
+requires_raw_data = pytest.mark.skipif(
+    not all((RAW_DIR / name).exists() for name in RAW_FILES),
+    reason="hackathon CSVs not present in data/raw/ (see README setup step 3)",
+)
 
 
 def make_external_frame() -> pd.DataFrame:
