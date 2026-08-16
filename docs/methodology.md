@@ -122,14 +122,14 @@ estimate moves.
 
 | Multiplier shift | Addressable (Rbn) | Captured (Rbn) | Portfolio share | Revenue opportunity (Rbn/yr) |
 |---:|---:|---:|---:|---:|
-| −25% | 2 850 | 191.6 | 6.72% | 6.39 |
-| −10% | 3 420 | 191.6 | 5.60% | 7.76 |
-| **0%** | **3 800** | **191.6** | **5.04%** | **8.68** |
-| +10% | 4 180 | 191.6 | 4.58% | 9.59 |
-| +25% | 4 750 | 191.6 | 4.03% | 10.96 |
+| −25% | 3 221 | 191.6 | 5.95% | 7.12 |
+| −10% | 3 865 | 191.6 | 4.96% | 8.64 |
+| **0%** | **4 295** | **191.6** | **4.46%** | **9.65** |
+| +10% | 4 724 | 191.6 | 4.06% | 10.66 |
+| +25% | 5 369 | 191.6 | 3.57% | 12.18 |
 
 **Reading:** if every multiple is wrong by a quarter in the same direction,
-portfolio share still lands between 4.0% and 6.7%. The headline conclusion —
+portfolio share still lands between 3.6% and 6.0%. The headline conclusion —
 that Syn Bank holds a low single-digit share and the growth runway is large — is
 robust to the assumption set. Client *rankings* are more stable still, because a
 uniform shift affects all clients in the same direction.
@@ -171,11 +171,13 @@ published financials as a scale reference and nothing more.
    quantifies the consequence.
 3. **SA attribution is judgmental.** See §2.2. It is the input we would most want
    to replace with disclosed segment data given more time.
-4. **One estimated revenue figure.** Sanlam does not disclose a single comparable
-   revenue line in its results release; we used an estimate anchored on its
-   reported R15.9bn net result from financial services, flagged
-   `source_quality = estimated`, and applied a confidence penalty. It should be
-   verified against the audited income statement before any external use.
+4. **Revenue basis differs by industry.** For insurers we use IFRS 17 insurance
+   revenue (Sanlam R292.0bn, OUTsurance R36.0bn); for the property companies,
+   net operating or gross rental income; for Glencore, note that its reported
+   revenue is marketing turnover and is not comparable to a producer's, which is
+   why its SA-attribution share is set very low. Each client's basis is recorded
+   in the `revenue_basis` column. Every figure is now `reported` or `derived` —
+   no estimated revenues remain.
 5. **Imputed cost of sales and inventory.** Where not separately disclosed, these
    are imputed from sector gross margins. Imputation is flagged per client
    (`cogs_imputed`, `inventory_imputed`) and lowers confidence.

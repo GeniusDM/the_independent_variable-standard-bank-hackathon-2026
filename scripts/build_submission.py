@@ -269,10 +269,17 @@ def fig_pillars(df) -> Path:
 # the original circular model, for the before/after comparison
 # --------------------------------------------------------------------------
 
-def original_model_shares(transactional) -> np.ndarray:
+def original_model(transactional):
+    """Returns (shares, wallet_size_ratio) for the original circular model.
+
+    The size ratio is taken from that model's own wallet estimate, so the claim
+    "it gave very different companies the same answer" is stated on its terms
+    rather than mixing in the replacement's numbers.
+    """
     g = (
         transactional.groupby("entity_id")
         .agg(
+            flow=("amount_zar", "sum"),
             transaction_count=("amount_zar", "size"),
             channel_count=("channel", "nunique"),
             inbound_ratio=("direction", lambda s: float((s == "inbound").mean())),
@@ -285,7 +292,8 @@ def original_model_shares(transactional) -> np.ndarray:
         + 0.04 * np.minimum(g["channel_count"] / 4.0, 1.0)
         + 0.03 * g["inbound_ratio"]
     )
-    return np.clip(ratio.to_numpy(), 0.08, 0.32)
+    wallet = g["flow"] * 0.0018
+    return np.clip(ratio.to_numpy(), 0.08, 0.32), float(wallet.max() / wallet.min())
 
 
 def main() -> int:
@@ -317,9 +325,15 @@ def main() -> int:
         "sens_max": float(sens["portfolio_share"].max()),
         "top": df.head(5),
         "sens": sens,
+        # Derived rather than hardcoded, so the prose cannot drift from the model.
+        "lead_pillar": df["top_pillar"].value_counts().idxmax(),
+        "lead_pillar_n": int(df["top_pillar"].value_counts().max()),
+        "estimated_inputs": int((df["source_quality"] == "estimated").sum()),
     }
 
-    old = original_model_shares(transactional)
+    old, size_ratio = original_model(transactional)
+    facts["old_spread"] = float(old.max() - old.min())
+    facts["size_ratio"] = size_ratio
     figs = {
         "share": fig_share_by_client(df, share),
         "oppty": fig_opportunity(df),

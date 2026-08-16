@@ -2,7 +2,7 @@
 
 - provider: `gemini`
 - model: `gemini-3.1-flash-lite`
-- latency: 1781 ms
+- latency: 3433 ms
 - grounding warnings: none
 
 ## System prompt
@@ -37,7 +37,7 @@ Uncaptured flow gap: R160.34B
 Annual fee revenue that gap represents: R375M
 Largest gap product pillar: Transactional
 Estimate confidence: 80%
-Opportunity rank in portfolio: 7 of 20
+Opportunity rank in portfolio: 8 of 20
 Urgency band: Low
 Per-pillar uncaptured gap: Transactional R114.87B, FX R42.82B, Trade Finance R2.65B
 90-day flow trend: transactional -1.2%, cross-border -15.0%, trade 33.1%
@@ -48,16 +48,16 @@ Write the briefing.
 
 ## Output
 
-SUMMARY: Syn Bank currently captures an estimated 10.2% of MTN Group’s addressable annual banking flow. The primary opportunity lies in closing the R114.87B transactional gap to capture a potential R375M in annual fee revenue.
+SUMMARY: Syn Bank currently captures an estimated 10.2% of MTN Group’s addressable annual banking flow, leaving a significant R160.34B gap. The primary opportunity lies in capturing the R114.87B transactional flow deficit to unlock an estimated R375M in annual fee revenue.
 
 SIGNALS:
-* We currently capture R18.15B of the R178.49B total addressable annual banking flow.
-* Transactional flow has declined by 1.2% over the last 90 days, while trade instruments have grown by 33.1%.
-* The transactional pillar represents the largest uncaptured gap at R114.87B.
+* The transactional flow gap stands at R114.87B, representing the largest uncaptured product pillar.
+* Transactional volumes remain high at 211,227 items, despite a 1.2% decline in the 90-day trend.
+* Trade finance activity shows positive momentum with a 33.1% increase in flow trend.
 
 AGENDA:
 * Propose a review of the current transactional mandate to capture a larger portion of the R114.87B uncaptured flow.
-* Discuss the 33.1% growth in trade instrument activity to identify how Syn Bank can support increased trade finance requirements.
-* Address the 15.0% decline in cross-border flow to determine if this is a shift in strategy or a temporary market fluctuation.
+* Discuss the 33.1% growth in trade finance to identify opportunities for increasing our share of the R2.65B trade gap.
+* Address the 15.0% decline in cross-border flow to determine if this is a temporary shift or a loss of wallet share.
 
 RISK: None.

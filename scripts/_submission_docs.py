@@ -43,11 +43,13 @@ def build_onepager(docs: Path, figs: dict, f: dict, old_shares) -> Path:
 <meta charset="utf-8">
 <title>Share of Wallet Intelligence Engine — {TEAM}</title>
 <style>
-  @page {{ size: A4; margin: 11mm 12mm; }}
+  /* Tuned so the whole summary lands on exactly one A4 page, as the brief
+     requires. Check the page count after any copy change. */
+  @page {{ size: A4; margin: 9mm 11mm; }}
   * {{ box-sizing: border-box; }}
   body {{
     font-family: "Segoe UI", system-ui, sans-serif;
-    color: {INK}; margin: 0; font-size: 8.4pt; line-height: 1.42;
+    color: {INK}; margin: 0; font-size: 8.3pt; line-height: 1.36;
   }}
   h1 {{ font-size: 15pt; margin: 0 0 1mm; letter-spacing: -0.2pt; }}
   h2 {{
@@ -109,7 +111,7 @@ def build_onepager(docs: Path, figs: dict, f: dict, old_shares) -> Path:
       could not depend on the data. It passed every obvious check — values between 0
       and 1, a plausible ranking — while giving <b>{len(old_shares)} very different companies
       the same answer</b>: {old_spread:.1f} points of spread across a portfolio whose
-      wallets differ by 301×.</p>
+      wallets differ by {f['size_ratio']:,.0f}×.</p>
       <img src="figures/before_after.png" alt="Share distribution, original versus two-sided model">
     </section>
 
@@ -141,8 +143,9 @@ def build_onepager(docs: Path, figs: dict, f: dict, old_shares) -> Path:
       </table>
       <p style="margin-top:1.6mm">Ranking blends gap size (50%) with ease of conversion,
       relationship depth and 90-day urgency, so the list is ordered by winnable value
-      rather than client size. <b class="hl">Transactional banking is the lead pillar for
-      19 of 20 clients</b> — cash-management consolidation is the repeatable conversation.</p>
+      rather than client size. <b class="hl">{f['lead_pillar']} banking is the lead pillar for
+      {f['lead_pillar_n']} of {f['clients']} clients</b> — cash-management consolidation is the
+      repeatable conversation.</p>
       <img src="figures/opportunity.png" alt="Top opportunities by annual fee revenue">
     </section>
 
@@ -167,8 +170,9 @@ def build_onepager(docs: Path, figs: dict, f: dict, old_shares) -> Path:
     <section>
       <h2>Limitations</h2>
       <p>20 clients supplied, not the 50 described. Flow multiples are benchmarks, not
-      observations. SA-attribution is judgmental. One revenue figure (Sanlam) is an
-      estimate, flagged and confidence-penalised. Gaps are attributed to competitors,
+      observations, and SA-attribution is the most judgmental input. Revenue basis differs
+      by industry and is recorded per client; cost of sales and inventory are imputed from
+      sector margins where not disclosed, and flagged. Gaps are attributed to competitors,
       assuming internal records are complete. Lending and DCM are out of scope.</p>
     </section>
   </div>
@@ -281,8 +285,8 @@ def build_deck(docs: Path, figs: dict, f: dict) -> Path:
             "The wallet term cancels. Share was identical to the\nassumed capture rate — the data never entered it.\n\n"
             "It passed every obvious check: values between 0 and 1,\na plausible-looking ranking.",
             15, color=C_MUTED, spacing=1.3)
-    stat(s, 0.7, 5.5, "301×", "difference in client size", C_MUTED)
-    stat(s, 3.6, 5.5, "4.4 pts", "difference in share", C_ORANGE)
+    stat(s, 0.7, 5.5, f"{f['size_ratio']:,.0f}×", "difference in client size", C_MUTED)
+    stat(s, 3.6, 5.5, f"{f['old_spread'] * 100:.1f} pts", "difference in share", C_ORANGE)
     picture(s, "before_after", 7.3, 2.3, 5.4)
 
     # 4 — the fix
@@ -308,16 +312,16 @@ def build_deck(docs: Path, figs: dict, f: dict) -> Path:
             15, color=C_MUTED)
 
     # 5 — headline
-    s = new("Syn Bank holds 5% of its clients' banking flow", "The finding")
+    s = new(f"Syn Bank holds {f['share'] * 100:.1f}% of its clients' banking flow", "The finding")
     stat(s, 0.7, 1.95, f"{f['share'] * 100:.1f}%", "share of wallet")
     stat(s, 3.7, 1.95, zar(f["addressable"]), "addressable flow")
     stat(s, 6.7, 1.95, zar(f["gap"]), "uncaptured gap", C_ORANGE)
     stat(s, 9.7, 1.95, zar(f["oppty"]), "fee opportunity / yr", C_ORANGE)
     picture(s, "pillars", 0.7, 3.3, 6.1)
-    textbox(s, 7.3, 3.35, 5.4, 0.5, "Transactional is the gap", 15, bold=True)
+    textbox(s, 7.3, 3.35, 5.4, 0.5, f"{f['lead_pillar']} is the gap", 15, bold=True)
     textbox(s, 7.3, 3.85, 5.4, 2.6,
             "It is the largest uncaptured pillar in absolute terms\n"
-            "and the lead pillar for 19 of 20 clients.\n\n"
+            f"and the lead pillar for {f['lead_pillar_n']} of {f['clients']} clients.\n\n"
             "That makes cash-management consolidation the\n"
             "repeatable conversation across the whole book —\n"
             "one proposition, twenty meetings.",
@@ -377,7 +381,7 @@ def build_deck(docs: Path, figs: dict, f: dict) -> Path:
             "•  20 clients supplied, not the 50 described.\n   We modelled what we were given.\n\n"
             "•  Flow multiples are benchmarks, not\n   observations.\n\n"
             "•  SA-attribution is the most judgmental input.\n\n"
-            "•  One revenue figure (Sanlam) is an estimate —\n   flagged and confidence-penalised.\n\n"
+            "•  Revenue basis differs by industry and is\n   recorded per client.\n\n"
             "•  Gaps assume our records are complete.",
             13.5, color=C_MUTED, spacing=1.3)
     textbox(s, 7.0, 1.85, 5.6, 0.5, "Next steps", 14, bold=True)
@@ -393,7 +397,9 @@ def build_deck(docs: Path, figs: dict, f: dict) -> Path:
     rule(s, 0, 0, 13.333, C_BLUE, h=0.22)
     textbox(s, 0.9, 1.5, 11.5, 0.5, "IN ONE LINE", 12, bold=True, color=C_BLUE)
     textbox(s, 0.9, 2.0, 11.6, 2.2,
-            "Syn Bank holds 5% of a R3.8 trillion flow.\nThe other 95% is worth R8.7bn a year in fees —\nand we can name who to call first.",
+            f"Syn Bank holds {f['share'] * 100:.1f}% of a {zar(f['addressable']).replace('tn', ' trillion')} flow.\n"
+            f"The other {100 - f['share'] * 100:.1f}% is worth {zar(f['oppty'])} a year in fees —\n"
+            "and we can name who to call first.",
             32, bold=True, spacing=1.28)
     rule(s, 0.9, 4.6, 1.8, C_ORANGE)
     textbox(s, 0.9, 5.0, 11.5, 1.2,

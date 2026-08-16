@@ -425,8 +425,8 @@ for xv, yv in zip(x, sens["portfolio_share"] * 100):
 
 ax.set_xlabel("Shift applied to every flow multiple (%)")
 ax.set_ylabel("Portfolio share (%)")
-ax.set_xticks(x); ax.set_ylim(3.4, 7.4)
-ax.set_title("Share stays between 4.0% and 6.7% even if every multiple is wrong by a quarter")
+ax.set_xticks(x); ax.set_ylim(3.0, 6.6)
+ax.set_title("Share stays between 3.6% and 6.0% even if every multiple is wrong by a quarter")
 plt.tight_layout(); plt.show()
 
 s = sens.copy()
@@ -535,15 +535,16 @@ print("flagged  :", llm.verify_grounding(bad, facts))
 cells.append(md("""
 ## 12. Findings
 
-1. **Syn Bank holds an estimated 5.0% of its clients' addressable banking flow** —
-   R191.6bn of R3.80tn — worth **R8.68bn a year in fee revenue** if fully closed.
-2. **Transactional banking is the dominant gap**, and it is the lead pillar for most
-   of the top ten. Cash management consolidation is the repeatable conversation.
+1. **Syn Bank holds an estimated 4.5% of its clients' addressable banking flow** —
+   R191.6bn of R4.29tn — worth **R9.65bn a year in fee revenue** if fully closed.
+2. **Transactional banking is the dominant gap**, and it is the lead pillar for
+   19 of the 20 clients. Cash management consolidation is the repeatable
+   conversation across the whole book.
 3. **Share is not uniform.** It runs from 0.1% to 67.8%. Pepkor and Aspen sit near
    17–18% while Shoprite, a much larger company, sits at 2.3% — Syn Bank is
    over-indexed on some relationships and barely present in others of similar size.
 4. **The conclusion is robust.** Under a +/-25% shift in every assumption, portfolio
-   share stays between 4.0% and 6.7%.
+   share stays between 3.6% and 6.0%.
 
 ### Sanity check against the brief
 
@@ -557,9 +558,10 @@ cites. That is an independent check on parameters we set from a different direct
 2. **Multiples are benchmarks, not observations.** Section 9 quantifies the exposure.
 3. **SA attribution is judgmental** and is the input we would most want to replace
    with disclosed segment data.
-4. **One estimated revenue figure.** Sanlam does not disclose a comparable revenue
-   line in its results release; the figure used is flagged `estimated`, carries a
-   confidence penalty, and needs verification against the audited statements.
+4. **Revenue basis differs by industry** — IFRS 17 insurance revenue for insurers,
+   rental income for the property companies, marketing turnover for Glencore
+   (which is why its SA-attribution is set very low). Each basis is recorded per
+   client. No estimated revenues remain: all 20 are reported or derived.
 5. **Imputed cost of sales and inventory** where not separately disclosed, flagged
    per client.
 6. **Gaps are attributed to competitors.** Some uncaptured flow is self-funded,
