@@ -1,0 +1,7 @@
+{
+  "text": "SUMMARY: Syn Bank currently captures an estimated 10.2% of MTN Group\u2019s addressable annual banking flow. The primary opportunity lies in closing the R114.87B transactional gap to capture a potential R375M in annual fee revenue.\n\nSIGNALS:\n* We currently capture R18.15B of the R178.49B total addressable annual banking flow.\n* Transactional flow has declined by 1.2% over the last 90 days, while trade instruments have grown by 33.1%.\n* The transactional pillar represents the largest uncaptured gap at R114.87B.\n\nAGENDA:\n* Propose a review of the current transactional mandate to capture a larger portion of the R114.87B uncaptured flow.\n* Discuss the 33.1% growth in trade instrument activity to identify how Syn Bank can support increased trade finance requirements.\n* Address the 15.0% decline in cross-border flow to determine if this is a shift in strategy or a temporary market fluctuation.\n\nRISK: None.",
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "latency_ms": 1780.5187000194564,
+  "grounding_warnings": []
+}

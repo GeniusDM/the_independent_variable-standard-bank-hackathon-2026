@@ -62,9 +62,61 @@ _load_dotenv()
 
 _CACHE: dict[str, LLMResponse] = {}
 
+# Cache survives process restarts. Gemini's free tier is quota'd per model per
+# DAY, so re-running the dashboard or the notebook would otherwise exhaust the
+# allowance on answers we already have. Disk cache also means a demo keeps
+# working after the quota is gone.
+CACHE_DIR = ROOT / "prompts" / "cache"
+
 
 def _cache_key(system: str, prompt: str, model: str) -> str:
     return hashlib.sha256(f"{model}\x00{system}\x00{prompt}".encode()).hexdigest()
+
+
+def _disk_cache_path(key: str) -> Path:
+    return CACHE_DIR / f"{key}.json"
+
+
+def _read_disk_cache(key: str) -> LLMResponse | None:
+    import json
+
+    path = _disk_cache_path(key)
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        return LLMResponse(
+            text=payload["text"],
+            provider=payload["provider"],
+            model=payload["model"],
+            latency_ms=float(payload.get("latency_ms", 0.0)),
+            cached=True,
+            grounding_warnings=payload.get("grounding_warnings", []),
+        )
+    except (OSError, ValueError, KeyError):
+        return None
+
+
+def _write_disk_cache(key: str, response: LLMResponse) -> None:
+    import json
+
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        _disk_cache_path(key).write_text(
+            json.dumps(
+                {
+                    "text": response.text,
+                    "provider": response.provider,
+                    "model": response.model,
+                    "latency_ms": response.latency_ms,
+                    "grounding_warnings": response.grounding_warnings,
+                },
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+    except OSError:
+        pass  # caching must never break a call
 
 
 def active_provider() -> str:
@@ -95,7 +147,13 @@ def _model_for(provider: str) -> str:
     if override:
         return override
     return {
-        "gemini": "gemini-2.0-flash",
+        # Gemini free tier is quota'd per model per DAY (20/day on the standard
+        # flash models), so the choice matters more than it looks. A lite model
+        # gets a larger daily allowance and is more than capable of rewriting a
+        # supplied fact block. Note that pinned names are also withdrawn on a
+        # rolling basis — gemini-2.0-flash and gemini-2.5-flash were both already
+        # gone when this was wired up — so check availability before changing it.
+        "gemini": "gemini-3.1-flash-lite",
         "anthropic": "claude-sonnet-5",
         "openai": "gpt-4o-mini",
         "ollama": os.environ.get("OLLAMA_MODEL", "gemma3:4b"),
@@ -105,15 +163,66 @@ def _model_for(provider: str) -> str:
 # --- provider implementations -------------------------------------------
 
 def _call_gemini(system: str, prompt: str, model: str, max_tokens: int) -> str:
-    import google.generativeai as genai
+    """Current google-genai SDK, falling back to the retired one if that is all
+    that is installed. google.generativeai is end-of-life and its model names
+    (gemini-2.0-flash and earlier) have already been withdrawn."""
+    try:
+        from google import genai
+        from google.genai import types
 
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    client = genai.GenerativeModel(model, system_instruction=system)
-    result = client.generate_content(
-        prompt,
-        generation_config={"max_output_tokens": max_tokens, "temperature": 0.2},
-    )
-    return (result.text or "").strip()
+        client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+        # Current Gemini flash models reason before answering, and those thinking
+        # tokens are charged against max_output_tokens. A budget that looks ample
+        # can therefore be consumed entirely by thinking, returning an empty
+        # string with finish_reason=MAX_TOKENS. This task is rewriting supplied
+        # facts rather than reasoning, so thinking is switched off: it removes the
+        # failure mode, roughly halves latency, and stretches the free-tier quota.
+        def build_config(disable_thinking: bool):
+            cfg = types.GenerateContentConfig(
+                system_instruction=system,
+                max_output_tokens=max_tokens,
+                temperature=0.2,
+            )
+            if disable_thinking:
+                try:
+                    cfg.thinking_config = types.ThinkingConfig(thinking_budget=0)
+                except (AttributeError, TypeError):
+                    pass  # older SDK
+            return cfg
+
+        try:
+            result = client.models.generate_content(
+                model=model, contents=prompt, config=build_config(True)
+            )
+        except Exception as exc:  # noqa: BLE001
+            # Some models reject thinking_budget=0 with 400 INVALID_ARGUMENT.
+            # Retry letting the model think rather than failing the request.
+            if "400" not in str(exc) and "INVALID_ARGUMENT" not in str(exc):
+                raise
+            result = client.models.generate_content(
+                model=model, contents=prompt, config=build_config(False)
+            )
+
+        text = (result.text or "").strip()
+        if not text and result.candidates:
+            reason = getattr(result.candidates[0], "finish_reason", None)
+            if reason is not None and "MAX_TOKENS" in str(reason):
+                raise LLMUnavailable(
+                    f"{model} hit the output limit before producing text "
+                    f"(max_tokens={max_tokens}); raise max_tokens."
+                )
+        return text
+    except ImportError:
+        import google.generativeai as legacy
+
+        legacy.configure(api_key=os.environ["GEMINI_API_KEY"])
+        chat = legacy.GenerativeModel(model, system_instruction=system)
+        result = chat.generate_content(
+            prompt,
+            generation_config={"max_output_tokens": max_tokens, "temperature": 0.2},
+        )
+        return (result.text or "").strip()
 
 
 def _call_anthropic(system: str, prompt: str, model: str, max_tokens: int) -> str:
@@ -175,6 +284,26 @@ _DISPATCH = {
     "ollama": _call_ollama,
 }
 
+_MAX_ATTEMPTS = 3
+_RETRY_BACKOFF_SECONDS = (4.0, 12.0)
+
+_RATE_LIMIT_MARKERS = (
+    "429",
+    "rate limit",
+    "ratelimit",
+    "resource_exhausted",
+    "resource exhausted",
+    "quota",
+    "too many requests",
+    "overloaded",
+    "503",
+)
+
+
+def _is_rate_limit(exc: Exception) -> bool:
+    blob = f"{type(exc).__name__} {exc}".lower()
+    return any(marker in blob for marker in _RATE_LIMIT_MARKERS)
+
 
 # --- grounding check -----------------------------------------------------
 
@@ -218,8 +347,10 @@ def generate(
 
     model = _model_for(provider)
     key = _cache_key(system, prompt, model)
-    if key in _CACHE:
-        hit = _CACHE[key]
+
+    hit = _CACHE.get(key) or _read_disk_cache(key)
+    if hit is not None:
+        _CACHE[key] = hit
         return LLMResponse(
             text=hit.text,
             provider=hit.provider,
@@ -230,12 +361,29 @@ def generate(
         )
 
     started = time.perf_counter()
-    try:
-        text = _DISPATCH[provider](system, prompt, model, max_tokens)
-    except LLMUnavailable:
-        raise
-    except Exception as exc:  # noqa: BLE001 - any provider error means "fall back"
-        raise LLMUnavailable(f"{provider} call failed: {type(exc).__name__}: {exc}") from exc
+    text = ""
+    last_error: Exception | None = None
+
+    # Free tiers rate-limit aggressively per minute, and generating several
+    # briefings in a row trips it. A short backoff turns a visible fallback into
+    # a slightly slower correct answer, which matters when demoing live.
+    for attempt in range(_MAX_ATTEMPTS):
+        try:
+            text = _DISPATCH[provider](system, prompt, model, max_tokens)
+            last_error = None
+            break
+        except LLMUnavailable:
+            raise
+        except Exception as exc:  # noqa: BLE001 - any provider error means "retry, then fall back"
+            last_error = exc
+            if not _is_rate_limit(exc) or attempt == _MAX_ATTEMPTS - 1:
+                break
+            time.sleep(_RETRY_BACKOFF_SECONDS[attempt])
+
+    if last_error is not None:
+        raise LLMUnavailable(
+            f"{provider} call failed: {type(last_error).__name__}: {last_error}"
+        ) from last_error
 
     if not text:
         raise LLMUnavailable(f"{provider} returned an empty response")
@@ -248,6 +396,7 @@ def generate(
         grounding_warnings=verify_grounding(text, allowed_facts) if allowed_facts else [],
     )
     _CACHE[key] = response
+    _write_disk_cache(key, response)
 
     if log_name:
         _log_exchange(log_name, system, prompt, response)
@@ -297,9 +446,14 @@ def _log_exchange(name: str, system: str, prompt: str, response: LLMResponse) ->
 def provider_status() -> dict:
     """Small diagnostic surfaced in the dashboard so the AI path is visible."""
     provider = active_provider()
+    try:
+        on_disk = len(list(CACHE_DIR.glob("*.json")))
+    except OSError:
+        on_disk = 0
     return {
         "provider": provider,
         "model": _model_for(provider) if provider != "none" else None,
         "live": provider != "none",
         "cachedResponses": len(_CACHE),
+        "cachedOnDisk": on_disk,
     }

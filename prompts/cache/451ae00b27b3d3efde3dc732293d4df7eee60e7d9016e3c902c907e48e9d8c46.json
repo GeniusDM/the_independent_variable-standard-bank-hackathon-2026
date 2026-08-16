@@ -1,0 +1,7 @@
+{
+  "text": "SUMMARY: Syn Bank currently captures R15.56B of Shoprite\u2019s estimated R663.23B addressable flow, representing an estimated 2.3% share of wallet. The primary opportunity is to aggressively target the R576.69B transactional gap to unlock an estimated R1.36B in annual fee revenue.\n\nSIGNALS:\n* Transactional flow has increased by 43.7% over the last 90 days.\n* The client currently processes 203,157 transactional items and 15,867 cross-border payments.\n* Transactional services represent the largest uncaptured gap at R576.69B.\n\nAGENDA:\n* Propose an integrated liquidity management solution to capture a larger portion of the R576.69B transactional gap.\n* Discuss the 43.7% growth in transactional activity to identify specific operational pain points.\n* Review the R39.10B trade finance gap to align our instruments with their current volume of 2,110 trade items.\n\nRISK: The 23.0% decline in cross-border flow over the last 90 days requires investigation to ensure it does not signal a shift in procurement strategy.",
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "latency_ms": 3040.4640999622643,
+  "grounding_warnings": []
+}

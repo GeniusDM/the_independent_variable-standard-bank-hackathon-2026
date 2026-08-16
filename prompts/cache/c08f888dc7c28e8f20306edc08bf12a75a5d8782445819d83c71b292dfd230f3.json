@@ -1,0 +1,7 @@
+{
+  "text": "BHP Group has the largest FX gap in the portfolio, with an estimated gap of R136.96B.\n\nIt is the only client in the portfolio identified with FX as the top gap pillar, suggesting that our current capture is heavily skewed away from their foreign exchange requirements. Addressing this gap represents a significant opportunity to capture a portion of their R393M annual fee opportunity.",
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "latency_ms": 3296.1147999740206,
+  "grounding_warnings": []
+}

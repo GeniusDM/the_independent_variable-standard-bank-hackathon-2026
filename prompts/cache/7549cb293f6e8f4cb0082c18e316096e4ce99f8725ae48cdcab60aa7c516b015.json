@@ -1,0 +1,7 @@
+{
+  "text": "SUMMARY: Syn Bank currently captures an estimated 13.0% share of wallet, leaving a significant R136.96B uncaptured flow gap. The primary opportunity lies in capturing the R69.82B FX gap to unlock an estimated R393M in potential annual fee revenue.\n\nSIGNALS:\n* The uncaptured flow gap across all product pillars totals R136.96B.\n* FX represents the largest uncaptured gap at R69.82B.\n* Cross-border payment flow has declined by 15.3% over the last 90 days.\n\nAGENDA:\n* Discuss strategies to migrate the R69.82B FX gap to Syn Bank to capture the associated R393M fee potential.\n* Review the 15.3% decline in cross-border payment volumes to identify underlying drivers.\n* Explore opportunities to increase the 1,314 trade instruments currently processed, given the 6.9% growth trend in trade finance.\n\nRISK: The 15.3% contraction in cross-border flow suggests a potential shift in the client\u2019s international settlement requirements.",
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "latency_ms": 2913.433999987319,
+  "grounding_warnings": []
+}
